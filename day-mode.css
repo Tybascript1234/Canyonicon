@@ -66,9 +66,16 @@ body.night-mode a {
 body.night-mode .logo-div-div-button {
 color: #ffffffda;
 }
+body.night-mode .logo-div-div-button .material-symbols-outlined {
+  color: #ffffffda;
+}
 body.night-mode .logo-div-div-button:hover {
 background-color: rgb(252 252 252 / 4%);
 }
+body.night-mode .logo-div-div-button:hover .material-symbols-outlined {
+  color: #2a86f3;
+}
+
 body.night-mode .links-a:hover {
 color: #ffffffa8;
 }
@@ -481,6 +488,13 @@ body.night-mode .result-item img {
 }
 body.night-mode .result-item.selected {
   background-color: #ffffff24;
+}
+body.night-mode .image-container {
+  border-color: #0000;
+}
+body.night-mode .image-container:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px 0 rgb(0 0 0 / 20%);
 }
 
 body .result-item svg {
