@@ -37,58 +37,60 @@ document.addEventListener("click", function (event) {
   }
 });
 
-// crispy
+
 // repply
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll(".Wave-cloud").forEach((btn) => {
+    let ripple = null;
 
-window.addEventListener("load", function () {
-  setTimeout(() => {
-    // تأكد من أنه لا توجد رسائل JavaScript قبل تنفيذ الموجة
-    if (!window.alertOpen) {
-      initializeWaveButtons();
-    }
-  }, 100); // تأخير بسيط للتأكد من تحميل العناصر
+    const create = (e) => {
+      if (ripple) return;
 
-  function initializeWaveButtons() {
-    const elements = document.querySelectorAll(".wave-button");
+      const r = btn.getBoundingClientRect();
+      const s = Math.max(r.width, r.height) * 0.5;
 
-    elements.forEach((element) => {
-      let isRippleActive = false;
-
-      function createRipple(e) {
-        if (isRippleActive) return;
-
-        isRippleActive = true;
-
-        const ripple = document.createElement("span");
-        const rect = element.getBoundingClientRect();
-        const size = Math.max(rect.width, rect.height);
-
-        let x, y;
-        if (e.clientX && e.clientY) {
-          x = e.clientX - rect.left - size / 2;
-          y = e.clientY - rect.top - size / 2;
-        } else if (e.touches && e.touches[0]) {
-          x = e.touches[0].clientX - rect.left - size / 2;
-          y = e.touches[0].clientY - rect.top - size / 2;
-        }
-
-        ripple.style.width = ripple.style.height = `${size}px`;
-        ripple.style.left = `${x}px`;
-        ripple.style.top = `${y}px`;
-        ripple.classList.add("ripple");
-
-        element.appendChild(ripple);
-
-        setTimeout(() => {
-          ripple.remove();
-          isRippleActive = false;
-        }, 600);
+      // دعم إحداثيات اللمس
+      let clientX = e.clientX,
+        clientY = e.clientY;
+      if (e.touches && e.touches.length > 0) {
+        clientX = e.touches[0].clientX;
+        clientY = e.touches[0].clientY;
       }
 
-      element.addEventListener("mousedown", createRipple);
-      element.addEventListener("touchstart", createRipple);
-    });
-  }
+      // تعديل هنا لجعل الموجة تبدأ من 80% من الارتفاع
+      const startFromTopPercentage = 0.8; // 80%
+      ripple = Object.assign(document.createElement("span"), {
+        className: "ripple",
+        style: `width:${s}px;height:${s}px;left:${
+          clientX - r.left - s / 2
+        }px;top:${(clientY - r.top - s / 2) * startFromTopPercentage}px`,
+      });
+
+      btn.appendChild(ripple);
+      requestAnimationFrame(() => ripple.classList.add("expand"));
+    };
+
+    const release = () => {
+      if (!ripple) return;
+      const current = ripple;
+      ripple = null;
+      setTimeout(() => {
+        current.classList.add("fade-out");
+        current.addEventListener(
+          "transitionend",
+          () => {
+            if (current.parentNode) current.remove();
+          },
+          { once: true }
+        );
+      }, 400);
+    };
+
+    ["mousedown", "touchstart"].forEach((e) => btn.addEventListener(e, create));
+    ["mouseup", "touchend", "mouseleave", "touchcancel"].forEach((e) =>
+      btn.addEventListener(e, release)
+    );
+  });
 });
 
 // ---------------------------------------------------------------------------------
@@ -1342,6 +1344,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const texts = [
     "👋مرحبًا!",
     "كيف حالك؟",
+    'اعلن معنا <a href="">إبدء الأن</a>',
     "أهلاً بعودتك من جديد",
     // "<edit><span></span><div></div></edit>",
     '<img src="Flag.png" alt="Pride Flag"> لا تنسى فلسطين',
@@ -1593,6 +1596,12 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 //   -----------------------------------------------------------------------------------------
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  
+});
+
 
 
 // document.addEventListener("DOMContentLoaded", function () {
