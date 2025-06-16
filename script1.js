@@ -1342,12 +1342,12 @@ window.addEventListener("DOMContentLoaded", () => {
 
 document.addEventListener("DOMContentLoaded", function () {
   const texts = [
-    "👋مرحبًا!",
+    "مرحبًا!👋",
     "كيف حالك؟",
     'اعلن معنا <a href="">إبدء الأن</a>',
     "أهلاً بعودتك من جديد",
     // "<edit><span></span><div></div></edit>",
-    '<img src="Flag.png" alt="Pride Flag"> لا تنسى فلسطين',
+    'لا تنسى فلسطين <img src="Flag.png" alt="Pride Flag">',
     "اللهم انصرهم وثبت اقدامهم",
   ];
 
