@@ -64,6 +64,7 @@ setTimeout(() => {
     <!-- DIV -->
     <div class="mom" id="content">
         <!-- menu -->
+      <div class="header_div">
         <header class="menu">
             <div class="menu-my">
               <div class="logo-div">
@@ -86,7 +87,7 @@ setTimeout(() => {
                 <!-- Links -->
                 <div class="links">
                     <div class="links-Tran links-a">
-                    <div class="links-Translate xox" id="toggleButtonss1" onclick="toggleDivA(event, 'bbb1')"><div id="language_background_display" class="Fy0Xbe" style="background-position: -1px -69px;" aria-hidden="true"></div><a id="selected_language_display" class="notranslate">English</a></div>
+                    <div class="links-Translate xox Wave-cloud" id="toggleButtonss1" onclick="toggleDivA(event, 'bbb1')"><div id="language_background_display" class="Fy0Xbe" style="background-position: -1px -69px;" aria-hidden="true"></div><a id="selected_language_display" class="notranslate">English</a></div>
                     <!-- Translate -->
                         <div class="links-Translate-div dide xox on_click" id="bbb1">
                           <div class="links-Translate-search" style="display: none;"><ion-icon name="search-outline"></ion-icon><input type="text" id="button_search_input" oninput="searchLanguage()"  placeholder="Search Translate"></div>
@@ -111,6 +112,7 @@ setTimeout(() => {
                 </div>
             </div>
         </header>
+      </div>
         <!-- search -->
         <div class="search">
             <div class="search-div">
@@ -571,7 +573,9 @@ setTimeout(() => {
 
         <!-- menu-fmo -->
         <div class="menu-fmo xox on_click" id="wwc6">
-          <div class="menu-fmo-div Wave-cloud" onclick="window.open('https://taibahcloud.com/', '_blank')"><icon style="background-image: url(logo-Taibah-Cart.png);"></icon>Taibah Cart<span class="spana"></span></div>
+          <div class="menu-fmo-div Wave-cloud"onclick="window.open('https://creativecloudsit.com/contact', '_blank')"><icon style="background-image: url(download.png);"></icon>Contact us<span class="spana"></span></div>
+          <on-liy class="onliy-hr"></on-liy>
+          <div class="menu-fmo-div Wave-cloud" onclick="window.open('https://apps.apple.com/jo/app/taibahcart/id6499343180', '_blank')"><icon style="background-image: url(logo-Taibah-Cart.png);"></icon>Taibah Cart<span class="spana xddfe" style="background-image: url(https://cdn-icons-png.flaticon.com/512/9205/9205302.png);"></span></div>
             <on-liy class="onliy-hr"></on-liy>
           <div class="menu-fmo-div Wave-cloud" onclick="fffo()"><a id="buttonspan">Message</a></div>
           <div class="menu-fmo-div" style="display: none;"><a>GitHub</a><span class="spana"></span></div>
@@ -769,10 +773,12 @@ setTimeout(() => {
             </div>
             <div class="margin" style="margin: auto;width: max-content;max-width: 100%;">
               <div class="qr_on_div">
-                <label for="logoInput" class="under">Upload photo</label>
-                <input type="file" id="logoInput" style="display: none;">
-                <input type="text" id="qrText" placeholder="Enter link">
-                <button class="under2 Wave-cloud" id="generateBtn">create</button>
+                <div style="display: flex;">
+                  <label for="logoInput" class="under">Upload photo</label>
+                  <input type="file" id="logoInput" style="display: none;">
+                  <input type="text" id="qrText" placeholder="Enter link">
+                  <button class="under2 Wave-cloud" id="generateBtn">create</button>
+                </div>
               </div>
               <div class="dow">
                 <div class="brq xo" id="qrcode"><img id="logo" src="" alt=""></div>
