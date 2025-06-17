@@ -207,8 +207,8 @@ setTimeout(() => {
                 <sw id="Logos"></sw>
                 <div class="title-gallery"><div class="xsw2">Logos</div></div>
                 <div class="category gallery" id="category1"></div>
-                <div class="title-gallery" style="display: none;"><div class="xsw2">Emoji</div></div>
-                <div class="category gallery" style="display: none;" id="category2"></div>
+                <div class="title-gallery"><div class="xsw2">Emoji</div></div>
+                <div class="category gallery" id="category2"></div>
                 <div class="category gallery" style="display: none;" id="category3"></div>
                 
                 <!-- download-app -->
@@ -230,7 +230,7 @@ setTimeout(() => {
                   <div id="popupName" style="margin: 0;" class="copy-text"></div>
                   <div style="display: flex;align-items: center;">
                     <div style="position: relative;">
-                      <div class="history-link ccd Wave-cloud ou show-btn" data-target="wwc24" style="margin: 0;"><i id="" class="fi fi-rr-share"></i></div>
+                      <div class="history-link ccd Wave-cloud ou show-btn layer" data-target="wwc24" style="margin: 0;"><i id="" class="fi fi-rr-share"></i></div>
                       <div class="Everyone-menu vov box-shadow xox on_click menu3" style="right: 0;width: max-content;max-width: max-content;" id="wwc24">
                         <div id="category-navigation">
                           <a class="Wave-cloud Click_focus xxse" id="copyShareLinkButton">Copy link<ion-icon name="copy-outline"></ion-icon></a>
@@ -765,51 +765,52 @@ setTimeout(() => {
           </div>
           <!-- ---- -->
           <div class="ad-container"></div>
-          <!-- 1 -->
-          <div class="qr_on xox" id="wwc23">
-            <div class="qr_on_close xox">
-              <div class="ovar"><div class="coffee-logo">Qr</div></div>
-              <div class="ovar" style="justify-content: right;"><button class="material-symbols-outlined hide-btn Wave-cloud" data-target="wwc23"> arrow_forward </button></div>
-            </div>
-            <div class="margin" style="margin: auto;width: max-content;max-width: 100%;">
-              <div class="qr_on_div">
-                <div style="display: flex;">
-                  <label for="logoInput" class="under">Upload photo</label>
-                  <input type="file" id="logoInput" style="display: none;">
-                  <input type="text" id="qrText" placeholder="Enter link">
-                  <button class="under2 Wave-cloud" id="generateBtn">create</button>
-                </div>
-              </div>
-              <div class="dow">
-                <div class="brq xo" id="qrcode"><img id="logo" src="" alt=""></div>
-                <label class="under Wave-cloud" id="downloadBtn" disabled>Download</label>
-              </div>
-            </div>
-            <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-          </div>
-
-          <!-- 2 -->
-          <div class="qr_on xox" id="wwc22">
-            <div class="qr_on_close xox">
-              <div class="ovar"><div class="coffee-logo">Code 128</div></div>
-              <div class="ovar" style="justify-content: right;"><button class="material-symbols-outlined hide-btn Wave-cloud" data-target="wwc22"> arrow_forward </button></div>
-            </div>
-            <div class="margin" style="margin: auto;width: max-content;">
-              <div class="qr_on_div">
-                <input type="text" id="barcodeText" placeholder="Enter link">
-                <button class="under2 Wave-cloud" onclick="generateBarcode()">create</button>
-              </div>
-              <div class="dow">
-                <div class="brq xo"><svg id="barcode"></svg></div>
-                <label class="under Wave-cloud" onclick="downloadBarcode()">Download</label>
-              </div>
-            </div>
-            <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
-          </div>
           <!-- ---- -->
           <lin>Can QR 2025 Edition</lin>
         </div>
+        <!-- 1 -->
+        <div class="qr_on xox" id="wwc23">
+          <div class="qr_on_close xox">
+            <div class="ovar"><div class="coffee-logo">Qr</div></div>
+            <div class="ovar" style="justify-content: right;"><button class="material-symbols-outlined hide-btn Wave-cloud" data-target="wwc23"> arrow_forward </button></div>
+          </div>
+          <div class="margin" style="margin: auto;width: max-content;max-width: 100%;">
+            <div class="qr_on_div">
+              <div style="display: flex;">
+                <label for="logoInput" class="under">Upload photo</label>
+                <input type="file" id="logoInput" style="display: none;">
+                <input type="text" id="qrText" placeholder="Enter link">
+                <button class="under2 Wave-cloud" id="generateBtn">create</button>
+              </div>
+            </div>
+            <div class="dow">
+              <div class="brq xo" id="qrcode"><img id="logo" src="" alt=""></div>
+              <label class="under Wave-cloud" id="downloadBtn" disabled>Download</label>
+            </div>
+          </div>
+          <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+        </div>
+
+        <!-- 2 -->
+        <div class="qr_on xox" id="wwc22">
+          <div class="qr_on_close xox">
+            <div class="ovar"><div class="coffee-logo">Code 128</div></div>
+            <div class="ovar" style="justify-content: right;"><button class="material-symbols-outlined hide-btn Wave-cloud" data-target="wwc22"> arrow_forward </button></div>
+          </div>
+          <div class="margin" style="margin: auto;width: max-content;">
+            <div class="qr_on_div">
+              <input type="text" id="barcodeText" placeholder="Enter link">
+              <button class="under2 Wave-cloud" onclick="generateBarcode()">create</button>
+            </div>
+            <div class="dow">
+              <div class="brq xo"><svg id="barcode"></svg></div>
+              <label class="under Wave-cloud" onclick="downloadBarcode()">Download</label>
+            </div>
+          </div>
+          <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+        </div>
+
     </div>
 
     <!-- DIV//. -->
