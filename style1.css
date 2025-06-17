@@ -4221,6 +4221,42 @@ body .active44 {
   z-index: 100;
 }
 
+/* canyon-12E-34x5 */
+.canyon-12E-34x5 {
+  position: fixed;
+  z-index: 100000;
+  display: none;
+  width: 250px;
+  padding: 10px 0;
+  top: 0;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0px 2px 7px #00000046, 0px 1px 1px #0000004f;
+}
+.canyon-12E-34x5 a {
+  height: 30px;
+  width: -webkit-fill-available;
+  padding: 0 16px;
+  padding-left: 36px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+}
+.canyon-12E-34x5 a:hover {
+  background-color: rgb(92 114 138 / 6%);
+}
+.canyon-12E-34x5 a sas {
+  font-size: 11px;
+  color: #a1a1a18a;
+  font-weight: 100;
+  font-family: 'Rubik';
+}
+
+
+
+
+
 
 
 
