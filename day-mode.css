@@ -107,11 +107,11 @@ background-color: #f0f0f047;
 
 body.night-mode .image-container {
 border: solid 1px #cccccc29;
-color: aliceblue;
+color: #dadada;
 }
 
 body.night-mode .click_button {
-color: aliceblue;
+color: #dadada;
 }
 
 body.night-mode .history-link i {
@@ -169,7 +169,7 @@ fill: rgb(68, 68, 68);
 
 body.night-mode .search-div-input input {
 background-color: rgb(50 52 59);
-color: antiquewhite;
+color: #dadada;
 }
 body.night-mode .search-div-input input:focus {
 background-color: rgb(56 58 67);
@@ -414,6 +414,10 @@ body.night-mode .result-item svg {
 fill: rgb(218, 218, 218);
 }
 
+body.night-mode .search-div-input .omn svg {
+  fill: rgb(218, 218, 218);
+  }
+
 body.night-mode #toggleIcons div span {
 background: #ffffff;
 }
@@ -495,6 +499,10 @@ body.night-mode .image-container {
 body.night-mode .image-container:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 18px 0 rgb(0 0 0 / 20%);
+}
+
+body.night-mode #tool-div:hover {
+  background: rgb(255 255 255 / 18%);
 }
 
 body .result-item svg {
