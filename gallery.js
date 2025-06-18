@@ -584,7 +584,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       // عرض رسالة "لا توجد نتائج" إذا لم توجد نتائج
       const noResultsItem = document.createElement("div");
       noResultsItem.className = "no-results";
-      noResultsItem.textContent = "لا توجد نتائج";
+      noResultsItem.innerHTML = '<span class="eerr" title="لا توجد نتائج">(^-^*)</span> لا توجد نتائج';
       searchResults.appendChild(noResultsItem);
     } else if (searchInput.value.trim() !== "") {
       // عرض نتائج البحث فقط إذا كان هناك نص في حقل البحث
@@ -600,16 +600,16 @@ document.addEventListener("DOMContentLoaded", async () => {
           <div class="result-item-content">
               <div class="result-thumbnail-container">
                   <img src="${imageUrl}" 
-                       alt="${name}" 
-                       class="result-thumbnail"
-                       loading="lazy"
-                       onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+                      alt="${name}" 
+                      class="result-thumbnail"
+                      loading="lazy"
+                      onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
                   <svg xmlns="http://www.w3.org/2000/svg" 
-                       height="22" 
-                       viewBox="0 -960 960 960" 
-                       width="22" 
-                       fill="#1f1f1f" 
-                       class="search-icon fallback-icon">
+                      height="22" 
+                      viewBox="0 -960 960 960" 
+                      width="22" 
+                      fill="#1f1f1f" 
+                      class="search-icon fallback-icon">
                       <path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/>
                   </svg>
               </div>
