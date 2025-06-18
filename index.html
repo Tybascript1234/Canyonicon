@@ -80,8 +80,8 @@ setTimeout(() => {
                 <div class="xxs">
                 <div class="search2" id="additionalSearch">
                   <label for="searchInput2" class="search2-sea"><ion-icon name="search-outline"></ion-icon></label>
-                  <input type="text" id="searchInput2" placeholder="Search icons">
-                  <button id="" class="search-div-close Wave-cloud"><ion-icon name="close-outline"></ion-icon></button>
+                  <input type="text" id="searchInput2" class="reers" placeholder="Search icons">
+                  <label for="clearButton" class="search-div-close Wave-cloud"><ion-icon name="close-outline"></ion-icon></label>
                 </div>
                 </div>
                 <!-- Links -->
@@ -121,7 +121,9 @@ setTimeout(() => {
             <br>
             <div class="margin">
               <div class="search-div-input">
-                <label for="searchInput" class="material-symbols-outlined omn"> search </label><input id="searchInput" type="text" placeholder="Search icons" autofocus><button id="clearButton" class="search-div-close Wave-cloud"><ion-icon name="close-outline"></ion-icon></button>
+                <label for="searchInput" class="material-symbols-outlined omn"> <svg xmlns="http://www.w3.org/2000/svg" height="22" viewBox="0 -960 960 960" width="22" fill="#1f1f1f" class="search-icon fallback-icon"> <path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"></path></svg> </label>
+                <input id="searchInput" type="text" class="reers" placeholder="Search icons" autofocus>
+                <button id="clearButton" class="search-div-close Wave-cloud"><ion-icon name="close-outline"></ion-icon></button>
                 <!-- Results -->
                 <div class="Results xox" id="searchResults" class="search-results" style="display: none;">
 
@@ -135,9 +137,9 @@ setTimeout(() => {
                       <button class="Everyone-button Wave-cloud click-button" data-menu="menu1"><a>Type</a><f class="Everyone-f"></f></button>
                       <div class="Everyone-menu vov box-shadow xox on_click menu3" id="menu1">
                         <div id="category-navigation" class="icon-type-toggle">
-                          <a class="icon-type-btn Wave-cloud zoom" data-type="outline">Outline<i class="fi fi-br-check coo"></i></a>
-                          <a class="icon-type-btn Wave-cloud" data-type="filled">Filled<i class="fi fi-br-check coo"></i></a>
-                          <a class="icon-type-btn Wave-cloud" data-type="sharp">Sharp<i class="fi fi-br-check coo"></i></a>
+                          <a class="icon-type-btn custom-btn Wave-cloud zoom" data-type="outline">Outline<i class="fi fi-br-check coo"></i></a>
+                          <a class="icon-type-btn custom-btn Wave-cloud" data-type="filled">Filled<i class="fi fi-br-check coo"></i></a>
+                          <a class="icon-type-btn custom-btn Wave-cloud" data-type="sharp">Sharp<i class="fi fi-br-check coo"></i></a>
                         </div>
                       </div>
                       <!-- <button onclick="askName()">جرب الإدخال</button>
@@ -152,40 +154,40 @@ setTimeout(() => {
                   <div class="Everyone-menu vov box-shadow xox on_click menu3" id="menu2">
                   <a id="resetButton" class="Wave-cloud" onclick="clearFilter()">All</a>
                   <div id="alphabet-buttons" class="notranslate">
-                  <a class="Wave-cloud">A</a>
-                  <a class="Wave-cloud">B</a>
-                  <a class="Wave-cloud">C</a>
-                  <a class="Wave-cloud">D</a>
-                  <a class="Wave-cloud">E</a>
-                  <a class="Wave-cloud">F</a>
-                  <a class="Wave-cloud">G</a>
-                  <a class="Wave-cloud">H</a>
-                  <a class="Wave-cloud">I</a>
-                  <a class="Wave-cloud">J</a>
-                  <a class="Wave-cloud">K</a>
-                  <a class="Wave-cloud">L</a>
-                  <a class="Wave-cloud">M</a>
-                  <a class="Wave-cloud">N</a>
-                  <a class="Wave-cloud">O</a>
-                  <a class="Wave-cloud">P</a>
-                  <a class="Wave-cloud">Q</a>
-                  <a class="Wave-cloud">R</a>
-                  <a class="Wave-cloud">S</a>
-                  <a class="Wave-cloud">T</a>
-                  <a class="Wave-cloud">U</a>
-                  <a class="Wave-cloud">V</a>
-                  <a class="Wave-cloud">W</a>
-                  <a class="Wave-cloud">X</a>
-                  <a class="Wave-cloud">Y</a>
-                  <a class="Wave-cloud">Z</a>
+                  <a class="custom-btn Wave-cloud">A</a>
+                  <a class="custom-btn Wave-cloud">B</a>
+                  <a class="custom-btn Wave-cloud">C</a>
+                  <a class="custom-btn Wave-cloud">D</a>
+                  <a class="custom-btn Wave-cloud">E</a>
+                  <a class="custom-btn Wave-cloud">F</a>
+                  <a class="custom-btn Wave-cloud">G</a>
+                  <a class="custom-btn Wave-cloud">H</a>
+                  <a class="custom-btn Wave-cloud">I</a>
+                  <a class="custom-btn Wave-cloud">J</a>
+                  <a class="custom-btn Wave-cloud">K</a>
+                  <a class="custom-btn Wave-cloud">L</a>
+                  <a class="custom-btn Wave-cloud">M</a>
+                  <a class="custom-btn Wave-cloud">N</a>
+                  <a class="custom-btn Wave-cloud">O</a>
+                  <a class="custom-btn Wave-cloud">P</a>
+                  <a class="custom-btn Wave-cloud">Q</a>
+                  <a class="custom-btn Wave-cloud">R</a>
+                  <a class="custom-btn Wave-cloud">S</a>
+                  <a class="custom-btn Wave-cloud">T</a>
+                  <a class="custom-btn Wave-cloud">U</a>
+                  <a class="custom-btn Wave-cloud">V</a>
+                  <a class="custom-btn Wave-cloud">W</a>
+                  <a class="custom-btn Wave-cloud">X</a>
+                  <a class="custom-btn Wave-cloud">Y</a>
+                  <a class="custom-btn Wave-cloud">Z</a>
                   </div>
                   </div>
 
                     <button class="Everyone-button Wave-cloud click-button" data-menu="menu3"><a>Sections</a> <i class="fi fi-rr-angle-small-down"></i><f class="Everyone-f"></f></button>
-                    <div class="Everyone-menu vov box-shadow xox on_click menu3" id="menu3">
+                    <div class="Everyone-menu vov box-shadow xox on_click visible menu3" id="menu3">
                       <div id="category-navigation">
-                        <a class="Wave-cloud" onclick="window.location.href='#App_icons';">App icons</a>
-                        <a class="Wave-cloud" onclick="window.location.href='#Logos';">Logos</a>
+                        <a class="custom-btn Wave-cloud" onclick="window.location.href='#App_icons';">App icons</a>
+                        <a class="custom-btn Wave-cloud" onclick="window.location.href='#Logos';">Logos</a>
                         <a class="Wave-cloud option">Emoji</a>
                         <a class="Wave-cloud option">Gif</a>
                       </div>
@@ -401,25 +403,25 @@ setTimeout(() => {
         <!-- Account-tools -->
         <div class="Account-tools-div box-shadow coffees on_click xox myDiver" id="wwc1">
           <div class="lon-close lon_close hide-btn Wave-cloud" data-target="wwc1"><ice class="material-symbols-outlined"> arrow_back </ice></div>
-          <a onclick="window.location.href='https://tybascript1234.github.io/settings/page1.html';" style="width: 100%;justify-content: left;display:inline-flex ;padding: 0;"><div class="lon Wave-cloud" style="width: 100%;margin-bottom: 4px;margin-top: 0;"><img class="no-menu" src="aa.png" alt=""><div><my-start>Subscribe</my-start><br><my-gmail>mystart@gmail.com</my-gmail></div><span class="spana" data-original-color="rgb(105, 115, 132)"></span></div></a>
+          <a onclick="window.location.href='https://tybascript1234.github.io/settings/page1.html';" style="width: 100%;justify-content: left;display:inline-flex ;padding: 0;"><div class="lon custom-btn Wave-cloud" style="width: 100%;margin-bottom: 4px;margin-top: 0;"><img class="no-menu" src="aa.png" alt=""><div><my-start>Subscribe</my-start><br><my-gmail>mystart@gmail.com</my-gmail></div><span class="spana" data-original-color="rgb(105, 115, 132)"></span></div></a>
           <on-liy class="onliy-hr"></on-liy>
-          <div class="lon lon-div show-btn Wave-cloud" data-target="wwc4">The support</div>
-          <div class="lon lon-div show-btn Wave-cloud" data-target="wwc2"><div id="selectedButton">Light mode</div><ice class="material-symbols-outlined"> check </ice></div>
-          <div class="lon lon-div show-btn Wave-cloud" data-target="wwc5">My content</div>
-          <div class="lon lon-div show-btn Wave-cloud" data-target="wwc3">Settings</div>
+          <div class="lon lon-div show-btn custom-btn Wave-cloud" data-target="wwc4">The support</div>
+          <div class="lon lon-div show-btn custom-btn Wave-cloud" data-target="wwc2"><div id="selectedButton">Light mode</div><ice class="material-symbols-outlined"> check </ice></div>
+          <div class="lon lon-div show-btn custom-btn Wave-cloud" data-target="wwc5">My content</div>
+          <div class="lon lon-div show-btn custom-btn Wave-cloud" data-target="wwc3">Settings</div>
           <!-- Night mode -->
           <div class="lon_div xox" id="wwc2">
             <div class="lon-close hide-btn Wave-cloud" data-target="wwc2"><ice class="material-symbols-outlined"> arrow_back </ice></div>
-            <div class="lon lon-div Wave-cloud" id="dayButton">Light mode<ice class="material-symbols-outlined"> check </ice></div>
-            <div class="lon lon-div Wave-cloud" id="nightButton">Night mode</div>
-            <div class="lon lon-div Wave-cloud" id="autoButton">Auto mode</div>
+            <div class="lon lon-div custom-btn Wave-cloud" id="dayButton">Light mode<ice class="material-symbols-outlined"> check </ice></div>
+            <div class="lon lon-div custom-btn Wave-cloud" id="nightButton">Night mode</div>
+            <div class="lon lon-div custom-btn Wave-cloud" id="autoButton">Auto mode</div>
           </div>
           <!-- Settings -->
           <div class="lon_div xox" id="wwc3">
             <div class="lon-close hide-btn Wave-cloud" data-target="wwc3"><ice class="material-symbols-outlined"> arrow_back </ice></div>
             <div class="lone">
-            <div class="lon lon-div show-btn Wave-cloud" data-target="wwc19">Edit account<ion-icon name="pencil-outline"></ion-icon></div>
-            <div class="lon lon-div Wave-cloud">Sign out</div>
+            <div class="lon lon-div show-btn custom-btn Wave-cloud" data-target="wwc19">Edit account<ion-icon name="pencil-outline"></ion-icon></div>
+            <div class="lon lon-div custom-btn Wave-cloud">Sign out</div>
           </div>
           </div>
           <div class="lon_div xox" id="wwc4">
