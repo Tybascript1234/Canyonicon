@@ -1289,6 +1289,14 @@ document.addEventListener("DOMContentLoaded", function () {
       button.style.backgroundColor = isChecked ? "rgb(161 195 255 / 26%)" : "";
     });
   }
+
+  // إضافة مراقبة لحقل الإدخال عند الكتابة
+  const inputElement = document.querySelector("input.reers");
+  if (inputElement) {
+    inputElement.addEventListener("input", () => {
+      clearFilter();
+    });
+  }
 });
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -1599,7 +1607,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 document.addEventListener("DOMContentLoaded", function () {
-  
+  const buttons = document.querySelectorAll(".custom-btn");
+
+  // عند تمرير الماوس فوق زر
+  buttons.forEach((button) => {
+    button.addEventListener("mouseenter", (e) => {
+      buttons.forEach((btn) => btn.classList.remove("active"));
+      button.classList.add("active");
+    });
+  });
+
+  // عند النقر خارج الأزرار، إزالة التفعيل
+  document.addEventListener("click", (e) => {
+    // إذا لم يكن النقر على زر من أزرارنا
+    if (!e.target.classList.contains("custom-btn")) {
+      buttons.forEach((btn) => btn.classList.remove("active"));
+    }
+  });
 });
 
 
