@@ -1290,14 +1290,14 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // إضافة مراقبة لحقل الإدخال عند الكتابة
-  const inputElement = document.querySelector("input.reers");
-  if (inputElement) {
-    inputElement.addEventListener("input", () => {
+  // إضافة مستمع حدث كتابة على input بالكلاس reers لإلغاء التحديدات عند الكتابة
+  document.querySelectorAll('input.reers').forEach((input) => {
+    input.addEventListener('input', () => {
       clearFilter();
     });
-  }
+  });
 });
+
 
 document.addEventListener("DOMContentLoaded", function () {
   const scrollTopBtn = document.getElementById("scrollTopBtn");
