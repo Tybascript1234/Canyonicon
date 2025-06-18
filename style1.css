@@ -127,7 +127,8 @@ button {
   cursor: pointer;
 }
 .Click_focus:focus {
-background: rgba(161, 195, 255, 0.26);
+  color: #353535;
+  background: rgba(161, 195, 255, 0.26);
 }
 label {
 /* color: rgb(53, 53, 53); */
@@ -746,6 +747,7 @@ margin-left: 13px;
 .search2 .search-div-close {
 width: 22px;
 height: 22px;
+display: flex;
 margin-right: 13px;
 }
 .search2 ion-icon {
@@ -1014,10 +1016,12 @@ background-color: #0084ff09;
   transition: ease 0.0s;
 }
 .search-div-input .omn {
-position: absolute;
-font-size: 22px;
-color: #7d7d7d;
-margin: 0px 16px;
+  margin: 0px 16px;
+  position: absolute;
+  display: block;
+}
+.search-div-input .omn svg {
+  fill: #7d7d7d;
 }
 /* Results */
 .Results {
@@ -1739,7 +1743,7 @@ justify-content: center;
   align-items: center;
   background-color: #ffd662;
   cursor: pointer;
-  border-radius: 7px;
+  border-radius: 25px;
 }
 .input-color:active {
   background-color: #e7c15a;
@@ -1854,7 +1858,7 @@ justify-content: center;
   padding: 11px 0;
   border-radius: 25px;
   backdrop-filter: blur(2px);
-  background-color: #ffffff17;
+  /* background-color: #ffffff17; */
   position: fixed;
   /* top: 0; */
   bottom: 50%;
@@ -1922,7 +1926,7 @@ justify-content: center;
   position: fixed;
 }
 #tool-div {
-  background-color: #365c6b00;
+  background-color: #ffffff17;
   outline: solid 0.5px #efefef;
 }
 #tool-div:hover {
@@ -2352,6 +2356,7 @@ body .Account-tools-div {
   height: 36px;
   position: relative;
   cursor: pointer;
+  user-select: none;
   padding: 8px 10px;
   display: flex;
   align-items: center;
@@ -2360,6 +2365,14 @@ body .Account-tools-div {
   border-radius: 8px;
 }
 .lon:hover {
+  background-color: rgb(92 114 138 / 6%);
+}
+
+body .custom-btn {
+  display: flex;
+}
+.custom-btn:hover,
+.custom-btn.active {
   background-color: rgb(92 114 138 / 6%);
 }
 .lon .spana {
@@ -3645,7 +3658,8 @@ body.fullscreen-active {
   position: absolute;
   z-index: 2;
   width: 100%;
-  height: 100%;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.199);
   left: 0;
   top: 0;
 }
@@ -3704,7 +3718,7 @@ body .zoom .ripple {
   background-color: rgba(161, 195, 255, 0.377);
 }
 .zoom i {
-  animation: lon 0.2s ease forwards;
+  animation: lon 0.3s ease forwards;
   position: absolute;
   right: 15px;
   display: flex;
@@ -4251,6 +4265,15 @@ body .active44 {
   color: #a1a1a18a;
   font-weight: 100;
   font-family: 'Rubik';
+}
+
+body .eerr {
+  font-family: monospace;
+  font-weight: 700;
+  user-select: none;
+  background: linear-gradient(to right, #83b1ff, #4d90fe, #2a86f3);
+  -webkit-background-clip: text;
+  color: transparent;
 }
 
 
