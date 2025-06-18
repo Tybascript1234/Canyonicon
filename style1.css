@@ -4466,7 +4466,7 @@ body .eerr {
     display: block;
     margin: 0;
     /* margin-top: 20px; */
-    /* overflow-x: auto; */
+    overflow-x: auto;
     padding-top: 0;
   }
   .xo {
