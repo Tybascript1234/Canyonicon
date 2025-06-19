@@ -29,6 +29,7 @@
         event.target.style.cursor = "context-menu";
       });
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.umd.js"></script>
     <!-- ---- -->
     <!-- icon "logo" -->
     <link rel="icon" href="screen.png">
@@ -70,10 +71,10 @@ setTimeout(() => {
               <div class="logo-div">
                 <div class="logo show-btn" data-target="wwc11" id="logoe"><tx id="mySpan"></tx><span class="logo-span no-menu"><a id="logo-span-a"></a><span class="span1 sse"><span></span></span><span class="span2 sse"><span></span></span><span class="span3"><img draggable="false" src="Shanb.svg" alt=""></span></span><div class="notranslate con">Canyon Icon</div></div>
               <div class="logo-div-div coffees box-shadow on_click xox" id="wwc11">
-                <button class="logo-div-div-button Click_focus Wave-cloud" onclick="window.open('index.html', '_blank')">Open In New<ion-icon name="open-outline"></ion-icon></button>
-                <button class="logo-div-div-button Click_focus Wave-cloud" onclick="reload_Page()">Reload</button>
-                <button class="logo-div-div-button Click_focus Wave-cloud" onclick="share_Link()">Share link</button>
-                <button class="logo-div-div-button Click_focus Wave-cloud" onclick="window.open('https://tpi.li/wRT5Yi', '_blank')">Advertise now<span class="material-symbols-outlined"> campaign </span></button>
+                <button class="logo-div-div-button custom-btn Click_focus Wave-cloud" onclick="window.open('index.html', '_blank')">Open In New<ion-icon name="open-outline"></ion-icon></button>
+                <button class="logo-div-div-button custom-btn Click_focus Wave-cloud" onclick="reload_Page()">Reload</button>
+                <button class="logo-div-div-button custom-btn Click_focus Wave-cloud" onclick="share_Link()">Share link</button>
+                <button class="logo-div-div-button custom-btn Click_focus Wave-cloud" onclick="window.open('https://tpi.li/wRT5Yi', '_blank')">Advertise now<span class="material-symbols-outlined"> campaign </span></button>
               </div>
               </div>  
                 <!-- search2 -->
@@ -188,7 +189,7 @@ setTimeout(() => {
                       <div id="category-navigation">
                         <a class="custom-btn Wave-cloud" onclick="window.location.href='#App_icons';">App icons</a>
                         <a class="custom-btn Wave-cloud" onclick="window.location.href='#Logos';">Logos</a>
-                        <a class="Wave-cloud option">Emoji</a>
+                        <a class="custom-btn Wave-cloud" onclick="window.location.href='#Emoji';">Emoji</a>
                         <a class="Wave-cloud option">Gif</a>
                       </div>
                     </div>
@@ -209,8 +210,9 @@ setTimeout(() => {
                 <sw id="Logos"></sw>
                 <div class="title-gallery"><div class="xsw2">Logos</div></div>
                 <div class="category gallery" id="category1"></div>
-                <div class="title-gallery"><div class="xsw2" style="display: none;">Emoji</div></div>
-                <div class="category gallery" id="category2" style="display: none;"></div>
+                <sw id="Emoji"></sw>
+                <div class="title-gallery"><div class="xsw2">Emoji</div></div>
+                <div class="category gallery" id="category2"></div>
                 <div class="category gallery" style="display: none;" id="category3"></div>
                 
                 <!-- download-app -->
@@ -223,7 +225,32 @@ setTimeout(() => {
                 <div class="download_link vov Wave-cloud"><ion-icon name="logo-apple"></ion-icon><div class="google_app">Download on the<br><my>App Store</my></div></div>
                 </div>
                 </div>
-                <div class="download-app-img noons"></div>
+
+                  <div class="download-app-img color-box noons" id="dynamicBox">
+                    <div class="uree"><a></a></div>
+                    <div class="download-app-img-div">
+                      <tima>
+                        <d id="clock">02:07</d>
+                        <div style="font-size: 11px; font-weight: 400; opacity: .9; margin-top: 2px;">بتوقيت مكة المكرمة</div>
+                      </tima>
+                      <div class="olclick">
+                        <div class="olclick_icon" id="btnShowWindow"><sw>1</sw><img src="مشروع جديد (2).png" alt=""><a>Canyn iocn</a></div>
+                      </div>
+                      <!-- ----- -->
+                      <div class="sswe" id="windowContainer">
+                        <div class="sswe-button" id="navButtons">
+                          <button class="Wave-cloud" id="btnPrevImage"><ion-icon name="arrow-back-outline"></ion-icon></button>
+                          <button class="Wave-cloud" id="btnNextImage"><ion-icon name="arrow-forward-outline"></ion-icon></button>
+                        </div>
+                        <div id="imageDisplay"></div>
+                      </div>
+                    </div>
+                    <div class="download-app-img_button">
+                      <button class="Wave-cloud" id="btnHideWindow"><ion-icon name="stop"></ion-icon></button>
+                    </div>
+                    <div class="cany">نظام Canyon icon</div>
+                  </div>
+
                 </div>
 
               </div>
@@ -402,7 +429,7 @@ setTimeout(() => {
 
         <!-- Account-tools -->
         <div class="Account-tools-div box-shadow coffees on_click xox myDiver" id="wwc1">
-          <div class="lon-close lon_close hide-btn Wave-cloud" data-target="wwc1"><ice class="material-symbols-outlined"> arrow_back </ice></div>
+          <div class="lon-close lon_close hide-btn custom-btn Wave-cloud" data-target="wwc1"><ice class="material-symbols-outlined"> arrow_back </ice></div>
           <a onclick="window.location.href='https://tybascript1234.github.io/settings/page1.html';" style="width: 100%;justify-content: left;display:inline-flex ;padding: 0;"><div class="lon custom-btn Wave-cloud" style="width: 100%;margin-bottom: 4px;margin-top: 0;"><img class="no-menu" src="aa.png" alt=""><div><my-start>Subscribe</my-start><br><my-gmail>mystart@gmail.com</my-gmail></div><span class="spana" data-original-color="rgb(105, 115, 132)"></span></div></a>
           <on-liy class="onliy-hr"></on-liy>
           <div class="lon lon-div show-btn custom-btn Wave-cloud" data-target="wwc4">The support</div>
@@ -411,21 +438,21 @@ setTimeout(() => {
           <div class="lon lon-div show-btn custom-btn Wave-cloud" data-target="wwc3">Settings</div>
           <!-- Night mode -->
           <div class="lon_div xox" id="wwc2">
-            <div class="lon-close hide-btn Wave-cloud" data-target="wwc2"><ice class="material-symbols-outlined"> arrow_back </ice></div>
+            <div class="lon-close hide-btn custom-btn Wave-cloud" data-target="wwc2"><ice class="material-symbols-outlined"> arrow_back </ice></div>
             <div class="lon lon-div custom-btn Wave-cloud" id="dayButton">Light mode<ice class="material-symbols-outlined"> check </ice></div>
             <div class="lon lon-div custom-btn Wave-cloud" id="nightButton">Night mode</div>
             <div class="lon lon-div custom-btn Wave-cloud" id="autoButton">Auto mode</div>
           </div>
           <!-- Settings -->
           <div class="lon_div xox" id="wwc3">
-            <div class="lon-close hide-btn Wave-cloud" data-target="wwc3"><ice class="material-symbols-outlined"> arrow_back </ice></div>
+            <div class="lon-close hide-btn custom-btn Wave-cloud" data-target="wwc3"><ice class="material-symbols-outlined"> arrow_back </ice></div>
             <div class="lone">
             <div class="lon lon-div show-btn custom-btn Wave-cloud" data-target="wwc19">Edit account<ion-icon name="pencil-outline"></ion-icon></div>
             <div class="lon lon-div custom-btn Wave-cloud">Sign out</div>
           </div>
           </div>
           <div class="lon_div xox" id="wwc4">
-            <div class="lon-close hide-btn Wave-cloud" data-target="wwc4"><ice class="material-symbols-outlined"> arrow_back </ice></div>
+            <div class="lon-close custom-btn hide-btn Wave-cloud" data-target="wwc4"><ice class="material-symbols-outlined"> arrow_back </ice></div>
             <div class="lone">
               <form onsubmit="sendEmail(); reset(); return false;">
               <input class="lone_input" id="name" type="text" placeholder="Your Name" name="name" required>
@@ -438,7 +465,7 @@ setTimeout(() => {
             </div>
           </div>
           <div class="lon_div xox" id="wwc19">
-            <div class="lon-close hide-btn Wave-cloud" data-target="wwc19"><ice class="material-symbols-outlined"> arrow_back </ice></div>
+            <div class="lon-close custom-btn hide-btn Wave-cloud" data-target="wwc19"><ice class="material-symbols-outlined"> arrow_back </ice></div>
             <div class="lone">
             <form>
               <input class="lone_input" id="name" type="text" placeholder="Your Name" name="name" required>
@@ -451,7 +478,7 @@ setTimeout(() => {
           </div>
           <!-- Our news -->
           <div class="lon_div xox" id="wwc5">
-            <div class="lon-close hide-btn Wave-cloud" data-target="wwc5"><span class="material-symbols-outlined"> arrow_back </span></div>
+            <div class="lon-close custom-btn hide-btn Wave-cloud" data-target="wwc5"><span class="material-symbols-outlined"> arrow_back </span></div>
             <div class="lone">
               <div class="Our-news">Number of icons <div class="onv" id="containerCount">0</div></div>
               <div class="Our-news Wave-cloud" id="toggleDownloadCounts">Number of downloads <div class="onv" id="totalDownloads">0</div><ion-icon class="fan" name="chevron-down-outline"></ion-icon></div>
@@ -568,16 +595,16 @@ setTimeout(() => {
         <div class="Links-web">
           <div class="Links-web-div">
             <a  href="https://creativecloudsit.com/" target="_blank" class="Links-web-logo notranslate llo"><span class="only"></span>Creative Clouds IT</a>
-            <a class="noons">Released under MIT License | Copyright @ 2024</a>
+            <a class="noons" style="cursor: pointer;" onclick="window.open('https://ionicframework.com/', '_blank')"><img src="https://ionic.io/ionicons/assets/img/ionic-os-logo.png" alt="" style="height: 20px;margin-right: 5px;">Source Ion icon</a>
             <a class="Links-web-link">Privacy policy<span class="spana" data-original-color="rgb(105, 115, 132)"></span></a> 
           </div>
         </div>
 
         <!-- menu-fmo -->
         <div class="menu-fmo xox on_click" id="wwc6">
-          <div class="menu-fmo-div Wave-cloud"onclick="window.open('https://creativecloudsit.com/contact', '_blank')"><icon style="background-image: url(download.png);"></icon>Contact us<span class="spana"></span></div>
+          <div class="menu-fmo-div Wave-cloud" onclick="window.open('https://creativecloudsit.com/contact', '_blank')"><icon style="background-image: url(download.png);"></icon>Contact us<span class="spana"></span></div>
           <on-liy class="onliy-hr"></on-liy>
-          <div class="menu-fmo-div Wave-cloud" onclick="window.open('https://apps.apple.com/jo/app/taibahcart/id6499343180', '_blank')"><icon style="background-image: url(logo-Taibah-Cart.png);"></icon>Taibah Cart<span class="spana xddfe" style="background-image: url(https://cdn-icons-png.flaticon.com/512/9205/9205302.png);"></span></div>
+          <div class="menu-fmo-div Wave-cloud" onclick="window.open('https://apps.apple.com/jo/app/taibahcart/id6499343180', '_blank')"><icon style="background-image: url(logo-Taibah-Cart.png);"></icon>Taibah Cart<span class="spana xddfe" style="filter: none; background-image: url(https://cdn-icons-png.flaticon.com/512/9205/9205302.png);"></span></div>
             <on-liy class="onliy-hr"></on-liy>
           <div class="menu-fmo-div Wave-cloud" onclick="fffo()"><a id="buttonspan">Message</a></div>
           <div class="menu-fmo-div" style="display: none;"><a>GitHub</a><span class="spana"></span></div>
