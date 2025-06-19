@@ -20,8 +20,12 @@ lin {
   transform: translate(-50%);
 }
 .result-item.selected {
+  box-shadow: 4px 0px 0px #2a86f3 inset;
   background-color: #f0f0f0;
   border-color: #ddd;
+}
+.result-item.selected:hover {
+  background-color: #e0e0e0;
 }
 .result-item img {
   position: absolute;
@@ -1025,6 +1029,7 @@ background-color: #0084ff09;
 }
 /* Results */
 .Results {
+  user-select: none;
   /* scrollbar-width: none; */
   z-index: 20;
   width: 100%;
@@ -1034,7 +1039,8 @@ background-color: #0084ff09;
   top: 60px;
   background: #fff;
   padding: 10px 0;
-  box-shadow: 0px 1px 1px #00000026, 0px 1px 2px rgb(0 0 0 / 0%), 0px 2px 5px rgb(0 0 0 / 10%);
+  /* box-shadow: 0px 1px 1px #00000026, 0px 1px 2px rgb(0 0 0 / 0%), 0px 2px 5px rgb(0 0 0 / 10%); */
+  box-shadow: 0 2px 4px rgba(0,0,0,.2);
 }
 
 /* Everyone */
@@ -1090,13 +1096,25 @@ width: 100%;
 background: #298dff;
 }
 .Everyone-button i {
-transition: ease 0.2s;
+transition: ease 0.3s;
 margin-left: 4px;
 }
-.Everyone-button:focus i {
-color: #298dff;
-transform: rotate(180deg);
+.Everyone-button:active i {
+  transition: ease 0.1s;
+  color: #298dff;
+  margin-top: 8px;
 }
+.Everyone-button:focus i {
+  color: #298dff;
+}
+@keyframes eew34 {
+  from {
+    margin-top: 8px;
+  }
+  to {
+    margin-top: 0;
+  }
+  }
 .Everyone-button::before {
 position: absolute;
 content: "";
@@ -2002,6 +2020,10 @@ body .tool2 {
   align-items: center;
   justify-content: center;
   font-size: 14px;
+  color: rgb(85, 85, 85);
+}
+.tool2-div:hover {
+  color: rgb(48, 48, 48);
 }
 .tool2-div-divs {
   background-color: #365c6b12;
@@ -2755,22 +2777,193 @@ user-select: all;
   position: absolute;
   top: 0;
   right: 0;
-  box-shadow: 0px 6px 14px #00000012, 0px -3px 8px #00000003, 0px 1px 3px #cccccc73;
+  box-shadow: 0px 1px 1px #00000026, 0px 1px 2px rgb(0 0 0 / 0%), 0px 2px 5px rgb(0 0 0 / 10%);
   border-radius: 22px;
-  overflow: hidden;
-  background-image: url(logo-app.svg);
+  /* overflow: hidden; */
+  background-image: url(Free.gif);
   background-size: cover;
   height: 497px;
   width: 245px;
+  outline: solid 3px;
 }
 .download-app-img::before {
   position: absolute;
   content: "";
+  height: 10px;
+  width: 60%;
+  margin: 0 49px;
+  left: 0;
+  border-radius: 50px;
+  bottom: -13px;
+  z-index: 54;
+  background: #00000000;
+  box-shadow: 0px 25px 11px #00000026;
+}
+.uree {
+  position: absolute;
+  top: 0;
+  width: -webkit-fill-available;
+  height: 23px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 30px 30px 0px 0px;
+  background: #00000000;
+  z-index: 10;
+}
+.uree a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px;
+  border-radius: 30px;
+  background-color: #000;
+}
+.uree a::before {
+  position: absolute;
+  padding: 4px;
+  border-radius: 10px;
+  background: #3f3f3f;
+  content: '';
+  box-shadow: 1px 1px 3px #ffffff66 inset;
+}
+.download-app-img-div {
+  height: -webkit-fill-available;
+  margin-bottom: 40px;
+}
+tima {
+  margin: auto;
+  display: block;
+  margin-top: 50px;
+  color: white;
+  text-shadow: 0px 1px 3px #0000005c;
+  font-size: 29px;
+  width: max-content;
+  font-weight: 400;
+  text-align: -webkit-center;
+}
+.download-app-img-div .sswe {
+    display: none;
+    position: absolute;
+    animation: sswe 0.4s ease forwards;
+    top: 0;
+    z-index: 8;
+    width: 100%;
+    height: -webkit-fill-available;
+    overflow-y: auto;
+    scrollbar-width: none;
+    border-radius: 21px;
+}
+@keyframes sswe {
+  from {
+    opacity: 0;
+    transform: scale(0.50);
+  }
+  to {
+    
+  }
+}
+
+.download-app-img-div .sswe .sswe-button {
+  transition: ease 0.3s;
+  position: absolute;
+  opacity: .1;
+  z-index: 5;
+  margin: 10px;
+  display: flex;
+  right: 0;
+}
+.download-app-img-div .sswe:hover .sswe-button {
+  opacity: 1;
+}
+.download-app-img-div .sswe .sswe-button button {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 25px;
+  margin-left: 5px;
+  background: #00000061;
+  color: white;
+}
+.download-app-img-div .sswe #imageDisplay {
   height: 100%;
   width: 100%;
+  background-image: url(logo-app.svg);
+  background-size: cover;
+  height: 497px;
+}
+.download-app-img_button {
+  position: absolute;
+  bottom: 0;
+  height: 40px;
+  width: 100%;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* background: #e9e9e957; */
+  border-radius: 10px 10px 21px 21px;
+}
+.download-app-img_button button {
+  height: 31px;
+  width: 60px;
+  background: #0000001f;
+  border-radius: 25px;
+  border: none;
+  color: white;
+  font-size: 22px;
+}
+.download-app-img_button button:hover {
+  background: #00000036;
+}
+.download-app-img_button button .ripple,.download-app-img-div .sswe .sswe-button button .ripple {
+  background-color: rgba(0, 0, 0, 0.075);
+}
+.olclick {
+  margin: 20px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.olclick_icon {
+  position: relative;
+  cursor: pointer;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  justify-content: center;
+  border-radius: 10px;
+  box-shadow: 0px 1px 2px #0000002f;
+}
+.olclick_icon img {
+  height: 100%;
+  border-radius: 10px;
+}
+.olclick_icon img:active {
+  filter: brightness(0.9);
+}
+.olclick_icon sw {
+  position: absolute;
   left: 0;
-  top: 0;
-  z-index: 5;
+  margin: -5px;
+  width: 16px;
+  height: 16px;
+  border-radius: 25px;
+  background: #fb423e;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  z-index: 2;
+  font-size: 11px;
+  box-shadow: 0px 1px 2px #00000047;
+}
+.olclick_icon a {
+  position: absolute;
+  bottom: -18px;
+  font-size: 9px;
+  width: max-content;
+  color: white;
+  text-shadow: 0px 1px 2px #0000008c;
 }
 
 
@@ -4274,6 +4467,18 @@ body .eerr {
   background: linear-gradient(to right, #83b1ff, #4d90fe, #2a86f3);
   -webkit-background-clip: text;
   color: transparent;
+}
+.cany {
+  position: absolute;
+  bottom: 0;
+  direction: rtl;
+  width: -webkit-fill-available;
+  font-size: 11px;
+  opacity: 1;
+  padding-bottom: 4px;
+  text-align: -webkit-center;
+  color: rgb(255 255 255 / 85%);
+  z-index: 11;
 }
 
 
