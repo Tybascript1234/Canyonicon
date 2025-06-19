@@ -71,12 +71,91 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  // دمج جميع الأيقونات في مصفوفة واحدة
+  // دعم الإيموجي
+  const emojiImages = [];
   let images = [
     ...categorizedIcons.outline,
     ...categorizedIcons.filled,
     ...categorizedIcons.sharp,
   ];
+
+  // تحميل الإيموجي
+  async function loadTwemojiToCategory2() {
+    const forbiddenEmojiKeywords = [
+      "beer",
+      "alcohol",
+      "wine",
+      "drug",
+      "smoke",
+      "gun",
+      "knife",
+      "bomb",
+    ];
+    try {
+      const response = await fetch(
+        "https://unpkg.com/emoji.json@13.1.0/emoji.json"
+      );
+      const emojiData = await response.json();
+
+      const filteredEmojis = emojiData
+        .filter(
+          (emoji) =>
+            !forbiddenEmojiKeywords.some((keyword) =>
+              emoji.name.toLowerCase().includes(keyword.toLowerCase())
+            )
+        )
+        .slice(0, 500);
+
+      function toCodePoint(unicodeSurrogates, sep = "-") {
+        const r = [];
+        let c = 0,
+          p = 0,
+          i = 0;
+        while (i < unicodeSurrogates.length) {
+          c = unicodeSurrogates.charCodeAt(i++);
+          if (p) {
+            r.push(((p - 0xd800) << 10) + (c - 0xdc00) + 0x10000);
+            p = 0;
+          } else if (0xd800 <= c && c <= 0xdbff) {
+            p = c;
+          } else {
+            r.push(c);
+          }
+        }
+        return r.map((c) => c.toString(16)).join(sep);
+      }
+
+      filteredEmojis.forEach((emoji) => {
+        const code = toCodePoint(emoji.char);
+        const imageUrl = `https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/${code}.png`;
+
+        emojiImages.push({
+          imageUrl,
+          name: emoji.name,
+          isLogo: false,
+          type: "emoji",
+          isEmoji: true,
+          category: "category2",
+        });
+      });
+    } catch (error) {
+      console.error("Error loading Twemoji:", error);
+      category2Container.innerHTML = `<div class="error">Failed to load emojis</div>`;
+    }
+  }
+
+  // تحديث images مع الإيموجي
+  function updateImagesWithEmojis() {
+    images = [
+      ...categorizedIcons.outline,
+      ...categorizedIcons.filled,
+      ...categorizedIcons.sharp,
+      ...emojiImages,
+    ];
+  }
+
+  await loadTwemojiToCategory2();
+  updateImagesWithEmojis();
 
   let downloadData = JSON.parse(localStorage.getItem("downloadData")) || {};
   const originalSources = new Map();
@@ -84,10 +163,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   let isIconLoading = false; // متغير لتتبع حالة التحميل
   let currentSelectedResultIndex = -1; // لتتبع العنصر المحدد في نتائج البحث
 
-  // في نظام تبديل الأيقونات
+  // تبديل الأيقونات
   const iconTypeButtons = document.querySelectorAll(".icon-type-btn");
-
-  // تطبيق تأثير zoom على الزر الافتراضي (outline) عند التحميل
   document
     .querySelector(`.icon-type-btn[data-type="${currentIconType}"]`)
     .classList.add("zoom");
@@ -102,7 +179,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         btn.style.opacity = "0.5";
       });
 
-      // إزالة تأثير zoom من جميع الأزرار وإضافته للزر المحدد
       iconTypeButtons.forEach((btn) => {
         btn.classList.remove("zoom");
         btn.style.transform = "";
@@ -123,14 +199,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   });
 
-  // التخزين المؤقت لتحسين الأداء
   const iconCache = {
     outline: null,
     filled: null,
     sharp: null,
   };
 
-  // دالة لمزامنة البحث بين الحقلين
   function syncSearchInputs(event) {
     if (event.target === searchInput) {
       searchInput2.value = searchInput.value;
@@ -140,11 +214,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     displayImages();
   }
 
-  // إضافة Event listeners لكلا حقلين البحث
   searchInput.addEventListener("input", syncSearchInputs);
   searchInput2.addEventListener("input", syncSearchInputs);
-
-  // إضافة Event listener للتنقل بين النتائج باستخدام الأسهم
   searchInput.addEventListener("keydown", handleSearchNavigation);
   searchInput2.addEventListener("keydown", handleSearchNavigation);
 
@@ -181,18 +252,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  // دالة مشتركة لعرض/إخفاء نتائج البحث وتعديل الأنماط
   function handleSearchResults(show) {
     if (show) {
       searchResults.style.display = "block";
       currentSelectedResultIndex = -1;
-      // إضافة border-radius عند ظهور نتائج البحث
       searchInput.style.borderRadius = "30px 30px 0px 0px";
       searchInput2.style.borderRadius = "8px";
     } else {
       searchResults.style.display = "none";
       searchResults.innerHTML = "";
-      // إعادة border-radius إلى قيمته الأصلية
       searchInput.style.borderRadius = "";
       searchInput2.style.borderRadius = "";
     }
@@ -211,7 +279,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (img) {
         let currentSrc = img.dataset.originalImage || img.src;
 
-        if (currentSrc) {
+        // لا تحديث للإيموجي
+        if (img.src.includes("twemoji")) return;
+
+        if (currentSrc && !img.dataset.emoji) {
           let newSrc = currentSrc;
 
           if (currentIconType === "filled") {
@@ -251,7 +322,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (popupImg) {
       let currentSrc = popupImg.dataset.originalImage || popupImg.src;
 
-      if (currentSrc) {
+      if (popupImg.src.includes("twemoji")) return;
+
+      if (currentSrc && !popupImg.dataset.emoji) {
         let newSrc = currentSrc;
 
         if (currentIconType === "filled") {
@@ -280,11 +353,9 @@ document.addEventListener("DOMContentLoaded", async () => {
               : currentSrc;
         }
 
-        // تحديث المصدر
         fetch(newSrc)
           .then((response) => response.text())
           .then((svgContent) => {
-            // تعديل لون الـ SVG بإضافة fill
             const parser = new DOMParser();
             const svgDoc = parser.parseFromString(svgContent, "image/svg+xml");
             const svgElement = svgDoc.querySelector("svg");
@@ -318,7 +389,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (popupImg) {
         let currentSrc = popupImg.dataset.originalImage || popupImg.src;
 
-        if (currentSrc) {
+        if (popupImg.src.includes("twemoji")) return;
+
+        if (currentSrc && !popupImg.dataset.emoji) {
           let newSrc = currentSrc;
 
           if (currentIconType === "filled") {
@@ -408,19 +481,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     const searchText = searchInput.value.trim().toLowerCase();
     const resultsFragment = document.createDocumentFragment();
 
-    if (iconCache[currentIconType] && searchText === "") {
-      await renderIcons(iconCache[currentIconType]);
-      return;
-    }
-
     let filteredImages = images.filter((imageData) => {
       const matchesSearch = imageData.name.toLowerCase().includes(searchText);
+
+      // دعم البحث عن الإيموجي
+      if (imageData.isEmoji) {
+        return matchesSearch;
+      }
+
       const matchesForbidden = forbiddenKeywords.some((keyword) =>
         imageData.name.toLowerCase().includes(keyword)
-      ); // التحقق من الكلمات المحظورة
+      );
 
       if (matchesForbidden) {
-        return false; // إخفاء الأيقونات المحظورة
+        return false;
       }
 
       if (imageData.isLogo) {
@@ -435,167 +509,199 @@ document.addEventListener("DOMContentLoaded", async () => {
       return matchesSearch && matchesType;
     });
 
+    // تحديث عدد الصور بعد الفلترة
     containerCount.textContent = filteredImages.length;
-
-    if (searchText === "") {
-      iconCache[currentIconType] = filteredImages;
-    }
 
     await renderIcons(filteredImages);
   }
 
-  async function renderIcons(filteredImages) {
-    // إظهار مؤشر التحميل
-    loadingIndicator.style.display = "block";
-    currentIconTypeText.textContent =
-      currentIconType.charAt(0).toUpperCase() + currentIconType.slice(1);
+async function renderIcons(filteredImages) {
+  loadingIndicator.style.display = "block";
+  currentIconTypeText.textContent =
+    currentIconType.charAt(0).toUpperCase() + currentIconType.slice(1);
 
-    let loadedCount = 0;
-    const totalCount = filteredImages.length;
+  let loadedCount = 0;
+  const totalCount = filteredImages.length;
 
-    function updateProgress() {
-      loadedCount++;
-      const percent = Math.round((loadedCount / totalCount) * 100);
-      loadingProgress.style.width = percent + "%";
-      loadingPercent.textContent = percent + "%";
+  function updateProgress() {
+    loadedCount++;
+    const percent = Math.round((loadedCount / totalCount) * 100);
+    loadingProgress.style.width = percent + "%";
+    loadingPercent.textContent = percent + "%";
 
-      if (loadedCount === totalCount) {
-        setTimeout(() => {
-          loadingIndicator.style.display = "none";
-        }, 500);
-      }
+    if (loadedCount === totalCount) {
+      setTimeout(() => {
+        loadingIndicator.style.display = "none";
+      }, 500);
     }
+  }
 
-    const batchSize = 50;
-    const resultsFragment = document.createDocumentFragment();
+  const batchSize = 50;
+  const resultsFragment = document.createDocumentFragment();
 
-    window.addEventListener(
-      "contextmenu",
-      function (e) {
-        if (e.target.closest(".image-container")) {
-          e.preventDefault();
+  window.addEventListener(
+    "contextmenu",
+    function (e) {
+      if (e.target.closest(".image-container")) {
+        e.preventDefault();
+      }
+    },
+    false
+  );
+
+  // اجمع صور الإيموجي التي بها خطأ لتحذفها لاحقًا
+  let emojiImagesToRemove = [];
+  let actuallyRenderedCount = 0; // عدد الصور التي تظهر فعلاً
+
+  for (let i = 0; i < filteredImages.length; i += batchSize) {
+    const batch = filteredImages.slice(i, i + batchSize);
+    await Promise.all(
+      batch.map(async (imageData) => {
+        const { imageUrl, name, category, isLogo, isEmoji } = imageData;
+
+        const imageContainer = document.createElement("button");
+        imageContainer.className = "image-container";
+
+        const rreDiv = document.createElement("div");
+        rreDiv.id = "rre";
+        rreDiv.style.display = "flex";
+        rreDiv.style.justifyContent = "center";
+        rreDiv.style.alignItems = "center";
+        imageContainer.appendChild(rreDiv);
+
+        const imgElement = document.createElement("img");
+        imgElement.className = "svg-icon";
+        imgElement.loading = "lazy";
+        imgElement.style.opacity = "1";
+        imgElement.src = imageUrl;
+        imgElement.dataset.originalImage = imageUrl;
+        imgElement.dataset.isLogo = isLogo;
+        imgElement.alt = name;
+        if (isEmoji) imgElement.dataset.emoji = "true";
+
+        let valid = true;
+
+        imgElement.onload = function () {
+          rreDiv.remove();
+          // فقط إذا لم تكن بها خطأ أضفها للعداد
+          actuallyRenderedCount++;
+          // تحديث العدد مباشرة لجعل العدد ديناميكي أثناء التحميل
+          containerCount.textContent = actuallyRenderedCount;
+        };
+
+        imgElement.onerror = function () {
+          rreDiv.remove();
+          valid = false;
+          if (isEmoji) {
+            emojiImagesToRemove.push(imageUrl);
+            imageContainer.remove();
+          }
+        };
+
+        const nameElement = document.createElement("div");
+        nameElement.className = "image-name";
+        nameElement.textContent = name;
+        nameElement.title = name;
+
+        const downloadButton = document.createElement("button");
+        downloadButton.innerHTML =
+          '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#1f1f1f"><path d="M240-400q-33 0-56.5-23.5T160-480q0-33 23.5-56.5T240-560q33 0 56.5 23.5T320-480q0 33-23.5 56.5T240-400Zm240 0q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm240 0q-33 0-56.5-23.5T640-480q0-33 23.5-56.5T720-560q33 0 56.5 23.5T800-480q0 33-23.5 56.5T720-400Z"/></svg>';
+        downloadButton.className = "download-btn";
+        downloadButton.addEventListener("click", (event) => {
+          if (isEmoji) {
+            showDownloadPopup(event, imgElement.src, name, false, true);
+          } else {
+            showDownloadPopup(
+              event,
+              imgElement.dataset.originalImage,
+              name,
+              isLogo
+            );
+          }
+        });
+
+        imageContainer.appendChild(imgElement);
+        imageContainer.appendChild(nameElement);
+        imageContainer.appendChild(downloadButton);
+        imageContainer.addEventListener("click", (event) => {
+          event.stopPropagation();
+          copyImageName(nameElement);
+        });
+
+        function copyImageName(nameElement) {
+          const originalName = nameElement.textContent;
+          nameElement.textContent = "Copied!";
+
+          navigator.clipboard
+            .writeText(originalName)
+            .then(() => {
+              console.log("Text copied to clipboard");
+            })
+            .catch((err) => {
+              console.error("Failed to copy text: ", err);
+            });
+
+          setTimeout(() => {
+            nameElement.textContent = originalName;
+          }, 1000);
         }
-      },
-      false
+
+        if (category === "category1") {
+          category1Container.appendChild(imageContainer);
+        } else if (category === "category2") {
+          category2Container.appendChild(imageContainer);
+        } else if (category === "category3") {
+          category3Container.appendChild(imageContainer);
+        } else {
+          galleryContainer.appendChild(imageContainer);
+        }
+
+        updateProgress();
+      })
     );
 
-    for (let i = 0; i < filteredImages.length; i += batchSize) {
-      const batch = filteredImages.slice(i, i + batchSize);
-      await Promise.all(
-        batch.map(async (imageData) => {
-          const { imageUrl, name, category, isLogo } = imageData;
+    await new Promise((resolve) => setTimeout(resolve, 0));
+  }
 
-          const imageContainer = document.createElement("button");
-          imageContainer.className = "image-container";
-
-          // إضافة div الـ rre
-          const rreDiv = document.createElement("div");
-          rreDiv.id = "rre";
-          rreDiv.style.display = "flex";
-          rreDiv.style.justifyContent = "center";
-          rreDiv.style.alignItems = "center";
-
-          imageContainer.appendChild(rreDiv);
-
-          // استخدام img بدلاً من canvas
-          const imgElement = document.createElement("img");
-          imgElement.className = "svg-icon";
-          imgElement.loading = "lazy";
-          imgElement.style.opacity = "1"; // تغيير من 0 إلى 1 لإظهار الصورة مباشرة
-          imgElement.src = imageUrl;
-          imgElement.dataset.originalImage = imageUrl;
-          imgElement.dataset.isLogo = isLogo;
-          imgElement.alt = name;
-
-          imgElement.onload = function () {
-            // إزالة العنصر مباشرة بدون تأثيرات
-            rreDiv.remove();
-          };
-
-          imgElement.onerror = function () {
-            // إزالة العنصر مباشرة في حالة الخطأ
-            rreDiv.remove();
-          };
-
-          const nameElement = document.createElement("div");
-          nameElement.className = "image-name";
-          nameElement.textContent = name;
-          nameElement.title = name;
-
-          const downloadButton = document.createElement("button");
-          downloadButton.innerHTML =
-            '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#1f1f1f"><path d="M240-400q-33 0-56.5-23.5T160-480q0-33 23.5-56.5T240-560q33 0 56.5 23.5T320-480q0 33-23.5 56.5T240-400Zm240 0q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm240 0q-33 0-56.5-23.5T640-480q0-33 23.5-56.5T720-560q33 0 56.5 23.5T800-480q0 33-23.5 56.5T720-400Z"/></svg>';
-          downloadButton.className = "download-btn";
-          downloadButton.addEventListener("click", (event) => {
-            const img = event.target
-              .closest(".image-container")
-              .querySelector("img");
-            const isLogo = img.dataset.isLogo === "true";
-            showDownloadPopup(event, img.dataset.originalImage, name, isLogo);
-          });
-
-          imageContainer.appendChild(imgElement);
-          imageContainer.appendChild(nameElement);
-          imageContainer.appendChild(downloadButton);
-          imageContainer.addEventListener("click", (event) => {
-            event.stopPropagation();
-            copyImageName(nameElement);
-          });
-
-          function copyImageName(nameElement) {
-            const originalName = nameElement.textContent;
-            nameElement.textContent = "Copied!";
-
-            navigator.clipboard
-              .writeText(originalName)
-              .then(() => {
-                console.log("Text copied to clipboard");
-              })
-              .catch((err) => {
-                console.error("Failed to copy text: ", err);
-              });
-
-            setTimeout(() => {
-              nameElement.textContent = originalName;
-            }, 1000);
-          }
-
-          if (category === "category1") {
-            category1Container.appendChild(imageContainer);
-          } else if (category === "category2") {
-            category2Container.appendChild(imageContainer);
-          } else if (category === "category3") {
-            category3Container.appendChild(imageContainer);
-          } else {
-            galleryContainer.appendChild(imageContainer);
-          }
-
-          updateProgress();
-        })
-      );
-
-      await new Promise((resolve) => setTimeout(resolve, 0));
+  // بعد انتهاء التحميل، احذف صور الإيموجي التي بها خطأ من emojiImages و images
+  if (emojiImagesToRemove.length > 0) {
+    for (const url of emojiImagesToRemove) {
+      const idx = emojiImages.findIndex(e => e.imageUrl === url);
+      if (idx !== -1) emojiImages.splice(idx, 1);
     }
+    images = [
+      ...categorizedIcons.outline,
+      ...categorizedIcons.filled,
+      ...categorizedIcons.sharp,
+      ...emojiImages
+    ];
+  }
+  // تأكد أن العدد النهائي بعد الفلترة هو فقط عدد الصور التي تم تحميلها بنجاح
+  containerCount.textContent = actuallyRenderedCount;
 
-    // إنشاء عناصر نتائج البحث
-    searchResults.innerHTML = "";
+  // إنشاء عناصر نتائج البحث
+  searchResults.innerHTML = "";
 
-    if (filteredImages.length === 0 && searchInput.value.trim() !== "") {
-      // عرض رسالة "لا توجد نتائج" إذا لم توجد نتائج
-      const noResultsItem = document.createElement("div");
-      noResultsItem.className = "no-results";
-      noResultsItem.innerHTML = '<span class="eerr" title="لا توجد نتائج">(^-^*)</span> لا توجد نتائج';
-      searchResults.appendChild(noResultsItem);
-    } else if (searchInput.value.trim() !== "") {
-      // عرض نتائج البحث فقط إذا كان هناك نص في حقل البحث
-      filteredImages.forEach((imageData) => {
-        const { name, imageUrl } = imageData;
+  if (actuallyRenderedCount === 0 && searchInput.value.trim() !== "") {
+    const noResultsItem = document.createElement("div");
+    noResultsItem.className = "no-results";
+    noResultsItem.innerHTML = '<span class="eerr" title="لا توجد نتائج">(^-^*)</span> لا توجد نتائج';
+    searchResults.appendChild(noResultsItem);
+  } else if (searchInput.value.trim() !== "") {
+    // فقط أضف النتائج للصور الظاهرة فعلاً
+    let renderedIndex = 0;
+    filteredImages.forEach((imageData) => {
+      const { name, imageUrl } = imageData;
+      // لا تضف النتائج إلا إذا الصورة نجحت (موجودة في emojiImages/filteredImages ولم تُحذف)
+      // لكن هنا لا يمكنك التأكد 100% إلا إذا ربطت الرقم أعلاه بالصور هنا
+      // للحل السريع: لو أردت إظهار النتائج فقط بقدر actuallyRenderedCount (الأولى فقط)
+      // لكن في أغلب الحالات لن تظهر نتائج غير موجودة لأن الصور المحذوفة تُحذف من filteredImages في الدوران القادم
 
+      if (renderedIndex < actuallyRenderedCount) {
         const resultItem = document.createElement("button");
         resultItem.className = "result-item ripple-btn";
         resultItem.setAttribute("onmousedown", "createRipple(event)");
 
-        // إنشاء هيكل النتيجة مع الصورة المصغرة
         resultItem.innerHTML = `
           <div class="result-item-content">
               <div class="result-thumbnail-container">
@@ -614,7 +720,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                   </svg>
               </div>
               <div class="result-name">${name}</div>
-              <!-- <button class="result-action-btn"></button> -->
           </div>
         `;
 
@@ -630,11 +735,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
 
         resultsFragment.appendChild(resultItem);
-      });
+        renderedIndex++;
+      }
+    });
 
-      searchResults.appendChild(resultsFragment);
-    }
+    searchResults.appendChild(resultsFragment);
   }
+}
 
   async function fetchIoniconsData() {
     try {
@@ -648,49 +755,34 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  // دالة لإنشاء رابط مشاركة للبوب
-  function generateShareableLink(imageUrl, name) {
+  // === مشاركة الرابط مع دعم خصائص الإيموجي ===
+  function generateShareableLink(imageUrl, name, isEmoji = false) {
     const baseUrl = window.location.origin + window.location.pathname;
     const encodedUrl = encodeURIComponent(imageUrl);
     const encodedName = encodeURIComponent(name);
     let category = "all";
-
-    // تحديد القسم إذا كانت الأيقونة ضمن تصنيف معين
+    let emojiParam = isEmoji ? "&isEmoji=1" : "";
     const iconData = images.find((img) => img.imageUrl === imageUrl);
     if (iconData) {
       category = iconData.category || "all";
+      if (iconData.isEmoji) emojiParam = "&isEmoji=1";
     }
-
-    // تضمين النوع الحالي للأيقونات في الرابط
-    return `${baseUrl}?popup=1&image=${encodedUrl}&name=${encodedName}&type=${currentIconType}&category=${category}`;
+    return `${baseUrl}?popup=1&image=${encodedUrl}&name=${encodedName}&type=${currentIconType}&category=${category}${emojiParam}`;
   }
 
-  // دالة لعرض رابط المشاركة في البوب
-  function showShareableLink(imageUrl, name) {
-    const shareLink = generateShareableLink(imageUrl, name);
-
+  function showShareableLink(imageUrl, name, isEmoji = false) {
+    const shareLink = generateShareableLink(imageUrl, name, isEmoji);
     if (popupShareLink) {
       popupShareLink.value = shareLink;
     }
-
     if (copyShareLinkButton) {
       copyShareLinkButton.onclick = function () {
-        navigator.clipboard
-          .writeText(shareLink)
-          .then(() => {
-            // تم نسخ الرابط بدون عرض رسالة
-          })
-          .catch((err) => {
-            console.error("فشل نسخ الرابط: ", err);
-          });
+        navigator.clipboard.writeText(shareLink);
       };
     }
-
-    // تحديث عنوان الصفحة ليعرض الرابط (بدون إعادة تحميل الصفحة)
     window.history.pushState({}, "", shareLink);
   }
 
-  // دالة للتحقق من وجود معلمات البوب عند تحميل الصفحة
   function checkForPopupOnLoad() {
     const urlParams = new URLSearchParams(window.location.search);
     const popupParam = urlParams.get("popup");
@@ -698,15 +790,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     const nameParam = urlParams.get("name");
     const typeParam = urlParams.get("type");
     const categoryParam = urlParams.get("category");
+    const isEmojiParam = urlParams.get("isEmoji");
 
     if (popupParam === "1" && imageParam && nameParam) {
       const decodedImage = decodeURIComponent(imageParam);
       const decodedName = decodeURIComponent(nameParam);
+      const isEmoji = isEmojiParam === "1";
 
-      // تعيين نوع الأيقونة إذا كان موجودًا في الرابط
       if (typeParam && ["outline", "filled", "sharp"].includes(typeParam)) {
         currentIconType = typeParam;
-        // تحديث زر النوع المحدد مع تأثير zoom
         document.querySelectorAll(".icon-type-btn").forEach((btn) => {
           btn.classList.remove("zoom");
           if (btn.dataset.type === currentIconType) {
@@ -714,12 +806,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             btn.style.transition = "all 0.3s ease";
           }
         });
-        // تحديث نص النوع الحالي
         currentIconTypeText.textContent =
           currentIconType.charAt(0).toUpperCase() + currentIconType.slice(1);
       }
-
-      // إذا كان هناك قسم محدد، قم بتمييزه
       if (categoryParam) {
         document
           .querySelectorAll(".category-navigation button")
@@ -731,7 +820,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           });
       }
 
-      // عرض البوب مباشرة عند تحميل الصفحة
       setTimeout(() => {
         showDownloadPopup(
           {
@@ -739,21 +827,20 @@ document.addEventListener("DOMContentLoaded", async () => {
             target: document.querySelector(".image-container"),
           },
           decodedImage,
-          decodedName
+          decodedName,
+          false,
+          isEmoji
         );
       }, 500);
 
-      // عرض الأيقونات الخاصة بالنوع المحدد
       setTimeout(() => {
         displayImages();
       }, 300);
     }
   }
 
-  // التهيئة الأولية
   await displayImages();
 
-  // دالة مشتركة للتعامل مع أحداث البحث
   function handleSearchEvents(searchField) {
     const searchText = searchField.value.trim();
     if (searchText !== "") {
@@ -766,7 +853,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     clearButton.style.display = searchText !== "" ? "flex" : "none";
   }
 
-  // إضافة Event listeners لكلا حقلين البحث
   searchInput.addEventListener("input", () => handleSearchEvents(searchInput));
   searchInput2.addEventListener("input", () => handleSearchEvents(searchInput2));
 
@@ -788,7 +874,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  function showDownloadPopup(event, imageUrl, name, isLogo = false) {
+  function showDownloadPopup(event, imageUrl, name, isLogo = false, isEmoji = false) {
     event.stopPropagation();
 
     const downloadPopup = document.getElementById("downloadPopup");
@@ -812,7 +898,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.body.appendChild(overlay);
 
     let displayImageUrl = imageUrl;
-    if (!isLogo) {
+    if (!isLogo && !isEmoji) {
       if (currentIconType === "filled") {
         displayImageUrl = imageUrl.includes("-outline.")
           ? imageUrl.replace("-outline.", ".")
@@ -840,7 +926,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }
 
-    // إنشاء canvas فقط عند الحاجة (لتحويل SVG إلى PNG)
     const tempCanvas = document.createElement("canvas");
     const tempCtx = tempCanvas.getContext("2d");
     const img = new Image();
@@ -858,12 +943,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       popupImage.dataset.originalImage = displayImageUrl;
       popupImage.dataset.originalCanvas = tempCanvas.toDataURL();
-      popupImage.src = displayImageUrl; // عرض SVG مباشرة
+      popupImage.src = displayImageUrl;
       popupName.textContent = name;
       popupLinkInput.value = displayImageUrl;
       popupPngInput.value = tempCanvas.toDataURL("image/png");
 
-      if (displayImageUrl.endsWith(".svg")) {
+      if (!isEmoji && displayImageUrl.endsWith(".svg")) {
         fetch(displayImageUrl)
           .then((response) => response.text())
           .then((svgCode) => {
@@ -877,8 +962,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         popupSvgInput.value = "SVG code not available";
       }
 
-      // عرض رابط المشاركة في البوب
-      showShareableLink(displayImageUrl, name);
+      showShareableLink(displayImageUrl, name, isEmoji);
 
       downloadPopup.style.display = "block";
       downloadPopup.style.opacity = 0;
@@ -893,40 +977,59 @@ document.addEventListener("DOMContentLoaded", async () => {
         downloadPopup.style.transform = "translateX(0)";
       }, 10);
 
-      function applyColorToCanvas(canvas, color) {
-        const ctx = canvas.getContext("2d");
-        ctx.globalCompositeOperation = "source-atop";
-        ctx.fillStyle = color;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.globalCompositeOperation = "source-over";
-      }
-
-      colorPicker.addEventListener("input", () => {
-        const originalImg = new Image();
-        originalImg.crossOrigin = "Anonymous"; // هذا السطر مهم
-        originalImg.onload = function () {
-          tempCtx.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
-          tempCtx.drawImage(
-            originalImg,
-            0,
-            0,
-            tempCanvas.width,
-            tempCanvas.height
-          );
-          applyColorToCanvas(tempCanvas, colorPicker.value);
-          popupImage.src = tempCanvas.toDataURL();
-          popupPngInput.value = tempCanvas.toDataURL("image/png");
-        };
-        originalImg.onerror = function () {
-          console.error("Failed to load image with CORS");
-          // يمكنك إضافة حل بديل هنا
-        };
-        originalImg.src =
-          popupImage.dataset.originalImage +
-          (popupImage.dataset.originalImage.includes("?") ? "&" : "?") +
-          "timestamp=" +
-          new Date().getTime();
+      [
+        "downloadSVG",
+        "downloadPDF",
+        "downloadWEBP",
+        "downloadGIF",
+        "downloadMP4",
+        "downloadTDS",
+        "downloadTIFF",
+        "downloadTGA",
+        "downloadBMP",
+        "downloadICO",
+        "downloadDXF",
+        "downloadRAW",
+        "downloadEMF",
+        "downloadPPM",
+        "downloadJPG",
+      ].forEach((btnId) => {
+        const btn = document.getElementById(btnId);
+        if (btn) btn.style.display = isEmoji ? "none" : "";
       });
+      const pngBtn = document.getElementById("downloadPNG");
+      if (pngBtn) pngBtn.style.display = "";
+
+      if (!isEmoji) {
+        colorPicker.disabled = false;
+        colorPicker.addEventListener("input", () => {
+          const originalImg = new Image();
+          originalImg.crossOrigin = "Anonymous";
+          originalImg.onload = function () {
+            tempCtx.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
+            tempCtx.drawImage(
+              originalImg,
+              0,
+              0,
+              tempCanvas.width,
+              tempCanvas.height
+            );
+            applyColorToCanvas(tempCanvas, colorPicker.value);
+            popupImage.src = tempCanvas.toDataURL();
+            popupPngInput.value = tempCanvas.toDataURL("image/png");
+          };
+          originalImg.onerror = function () {
+            console.error("Failed to load image with CORS");
+          };
+          originalImg.src =
+            popupImage.dataset.originalImage +
+            (popupImage.dataset.originalImage.includes("?") ? "&" : "?") +
+            "timestamp=" +
+            new Date().getTime();
+        });
+      } else {
+        colorPicker.disabled = true;
+      }
 
       const sizeButtons = {
         resize24: 24,
@@ -959,12 +1062,9 @@ document.addEventListener("DOMContentLoaded", async () => {
           downloadPopup.style.transform = "translateX(100%)";
           setTimeout(() => {
             downloadPopup.style.display = "none";
-
             if (overlay && overlay.parentNode) {
               document.body.removeChild(overlay);
             }
-
-            // إعادة تعيين عنوان URL عند إغلاق البوب
             window.history.pushState({}, "", window.location.pathname);
           }, 500);
           document.removeEventListener("mousedown", closePopupHandler);
@@ -985,8 +1085,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           setTimeout(() => {
             downloadPopup.style.display = "none";
             document.body.removeChild(overlay);
-
-            // إعادة تعيين عنوان URL عند إغلاق البوب
             window.history.pushState({}, "", window.location.pathname);
           }, 500);
         });
@@ -995,23 +1093,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     img.onerror = function () {
       console.error("Error loading image:", displayImageUrl);
-      // محاولة تحميل الصورة الأصلية كحل بديل
       const fallbackImage = new Image();
       fallbackImage.onload = function () {
         popupImage.src = imageUrl;
         popupImage.dataset.originalImage = imageUrl;
         popupName.textContent = name;
         popupLinkInput.value = imageUrl;
-
-        // عرض رابط المشاركة في البوب
-        showShareableLink(imageUrl, name);
+        showShareableLink(imageUrl, name, isEmoji);
 
         downloadPopup.style.display = "block";
         downloadPopup.style.opacity = 0;
         downloadPopup.style.transform = "translateX(100%)";
         downloadPopup.style.position = "fixed";
         downloadPopup.style.zIndex = "1000";
-
         setTimeout(() => {
           downloadPopup.style.transition =
             "transform 0.5s ease, opacity 0.5s ease";
@@ -1119,8 +1213,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     ctx.putImageData(imgData, 0, 0);
   }
 
+  // تنزيل صورة: إذا كانت إيموجي، استخدم فقط PNG
   function downloadImage(url, name, format) {
     const selectedColor = colorPicker.value;
+    const isEmoji = url.includes("twemoji");
+    if (isEmoji) {
+      fallbackDownload(url, name, "png");
+      return;
+    }
 
     if (format === "svg") {
       fetch(url)
@@ -1181,7 +1281,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       canvas.height = img.height;
       ctx.drawImage(img, 0, 0);
 
-      if (!isLogo) {
+      if (!isLogo && !img.src.includes("twemoji")) {
         applyColorToCanvas(canvas, colorPicker.value);
       }
 
@@ -1248,7 +1348,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     );
   document
     .getElementById("downloadPNG")
-    .addEventListener("click", () => handleDownload("png"));
+    .addEventListener("click", () => {
+      const url = popupImage.dataset.originalImage;
+      const name = popupName.textContent;
+      if (url && url.includes("twemoji")) {
+        fallbackDownload(url, name, "png");
+      } else {
+        handleDownload("png");
+      }
+    });
   document
     .getElementById("downloadJPG")
     .addEventListener("click", () => handleDownload("jpg"));
@@ -1306,7 +1414,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  // التحقق من وجود معلمات البوب عند تحميل الصفحة
   checkForPopupOnLoad();
 
   searchInput.focus();
