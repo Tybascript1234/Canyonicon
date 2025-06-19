@@ -1628,6 +1628,101 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+document.addEventListener("DOMContentLoaded", function () {
+  const btnShowWindow = document.getElementById("btnShowWindow");
+  const btnHideWindow = document.getElementById("btnHideWindow");
+  const windowContainer = document.getElementById("windowContainer");
+  const imageDisplay = document.getElementById("imageDisplay");
+  const btnPrevImage = document.getElementById("btnPrevImage");
+  const btnNextImage = document.getElementById("btnNextImage");
+
+  const images = [
+    "logo-app.svg",
+  ];
+  let currentIndex = 0;
+
+  function updateImage() {
+    imageDisplay.style.backgroundImage = `url('${images[currentIndex]}')`;
+  }
+
+  btnShowWindow.onclick = () => {
+    windowContainer.style.display = "block";
+  };
+
+  btnHideWindow.onclick = () => {
+    windowContainer.style.display = "none";
+  };
+
+  btnPrevImage.onclick = () => {
+    currentIndex = (currentIndex - 1 + images.length) % images.length;
+    updateImage();
+  };
+
+  btnNextImage.onclick = () => {
+    currentIndex = (currentIndex + 1) % images.length;
+    updateImage();
+  };
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  document.addEventListener("DOMContentLoaded", () => {
+    const box = document.getElementById("dynamicBox");
+    const img = document.getElementById("mainImage");
+
+    if (img) {
+      if (img.complete) {
+        applyBoxShadow();
+      } else {
+        img.addEventListener("load", applyBoxShadow);
+      }
+    } else {
+      applyBackgroundBoxShadow();
+    }
+
+    function applyBoxShadow() {
+      const colorThief = new ColorThief();
+      const dominantColor = colorThief.getColor(img);
+      const shadowColor = `rgba(${dominantColor.join(",")}, 0.7)`;
+      box.style.boxShadow = `0 0 25px 5px ${shadowColor}`;
+    }
+
+    function applyBackgroundBoxShadow() {
+      const style = window.getComputedStyle(box);
+      const bg = style.backgroundColor;
+      box.style.boxShadow = `0 0 25px 5px ${bg}`;
+    }
+  });
+});
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  function updateClock() {
+    const now = new Date();
+    let hours = now.getHours();
+    let minutes = now.getMinutes();
+    let period = "AM";
+
+    if (hours >= 12) {
+      period = "PM";
+    }
+
+    hours = hours % 12;
+    hours = hours === 0 ? 12 : hours;
+
+    hours = hours < 10 ? "0" + hours : hours;
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+
+    document.getElementById(
+      "clock"
+    ).innerHTML = `${hours}:${minutes} <span class="period" style="font-size: 12px; position: relative; top: 0px; left: -2px;">${period}</span>`;
+  }
+
+  updateClock();
+  setInterval(updateClock, 60 * 1000); // حدث الساعة كل دقيقة
+});
+
+
+
 // document.addEventListener("DOMContentLoaded", function () {
 //   // روابط الصور لكل نوع رسالة
 //   const icons = {
