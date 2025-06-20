@@ -1213,32 +1213,54 @@ async function renderIcons(filteredImages) {
     ctx.putImageData(imgData, 0, 0);
   }
 
+  // ===== التعديلات الجديدة على وظائف التنزيل =====
+  
+  // دالة مساعدة لتنزيل الملف
+  function triggerDownload(url, filename) {
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
   // تنزيل صورة: إذا كانت إيموجي، استخدم فقط PNG
   function downloadImage(url, name, format) {
-    const selectedColor = colorPicker.value;
     const isEmoji = url.includes("twemoji");
+    
+    // معالجة الإيموجي بشكل منفصل (PNG فقط)
     if (isEmoji) {
+      if (format !== "png") {
+        alert("الإيموجي متاح للتنزيل بصيغة PNG فقط");
+        return;
+      }
       fallbackDownload(url, name, "png");
       return;
     }
 
+    // معالجة الأيقونات العادية
+    const selectedColor = colorPicker.value;
+    
     if (format === "svg") {
       fetch(url)
-        .then((response) => response.text())
-        .then((svgData) => {
+        .then(response => {
+          if (!response.ok) throw new Error("Network response was not ok");
+          return response.text();
+        })
+        .then(svgData => {
           const parser = new DOMParser();
           const svgDoc = parser.parseFromString(svgData, "image/svg+xml");
           const svgElement = svgDoc.querySelector("svg");
 
+          // تطبيق اللون المحدد على SVG
           const elements = svgElement.querySelectorAll("*");
-          elements.forEach((el) => {
+          elements.forEach(el => {
             if (el.hasAttribute("fill") && el.getAttribute("fill") !== "none") {
               el.setAttribute("fill", selectedColor);
             }
-            if (
-              el.hasAttribute("stroke") &&
-              el.getAttribute("stroke") !== "none"
-            ) {
+            if (el.hasAttribute("stroke") && el.getAttribute("stroke") !== "none") {
               el.setAttribute("stroke", selectedColor);
             }
           });
@@ -1252,54 +1274,70 @@ async function renderIcons(filteredImages) {
 
           const blob = new Blob([coloredSVG], { type: "image/svg+xml" });
           const svgUrl = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = svgUrl;
-          a.download = `${name}.svg`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
+          triggerDownload(svgUrl, `${name}.svg`);
           URL.revokeObjectURL(svgUrl);
 
           updateDownloadCount(name);
         })
-        .catch((error) => {
+        .catch(error => {
           console.error("Error processing SVG:", error);
           fallbackDownload(url, name, "svg");
         });
     } else {
-      handleDownload(format, name, true);
+      // معالجة الصيغ الأخرى (PNG, JPG, etc.)
+      handleDownload(format, name);
     }
   }
 
   function handleDownload(format, name, isLogo = false) {
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
-    const img = new Image();
+    return new Promise((resolve, reject) => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      const img = new Image();
+      img.crossOrigin = "Anonymous";
 
-    img.onload = function () {
-      canvas.width = img.width;
-      canvas.height = img.height;
-      ctx.drawImage(img, 0, 0);
+      img.onload = function() {
+        try {
+          canvas.width = img.width;
+          canvas.height = img.height;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0);
 
-      if (!isLogo && !img.src.includes("twemoji")) {
-        applyColorToCanvas(canvas, colorPicker.value);
-      }
+          if (!isLogo && !img.src.includes("twemoji")) {
+            applyColorToCanvas(canvas, colorPicker.value);
+          }
 
-      let mimeType = `image/${format}`;
-      if (format === "jpg") mimeType = "image/jpeg";
+          let mimeType;
+          switch(format) {
+            case "jpg": mimeType = "image/jpeg"; break;
+            case "png": mimeType = "image/png"; break;
+            case "webp": mimeType = "image/webp"; break;
+            default: mimeType = `image/${format}`;
+          }
 
-      const dataUrl = canvas.toDataURL(mimeType, 1.0);
-      const a = document.createElement("a");
-      a.href = dataUrl;
-      a.download = `${name}.${format}`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+          canvas.toBlob(blob => {
+            if (!blob) {
+              reject(new Error("Failed to create blob"));
+              return;
+            }
+            
+            const url = URL.createObjectURL(blob);
+            triggerDownload(url, `${name}.${format}`);
+            URL.revokeObjectURL(url);
+            updateDownloadCount(name);
+            resolve();
+          }, mimeType, 1.0);
+        } catch (error) {
+          reject(error);
+        }
+      };
 
-      updateDownloadCount(name);
-    };
+      img.onerror = function() {
+        reject(new Error("Failed to load image"));
+      };
 
-    img.src = popupImage.dataset.originalImage;
+      img.src = popupImage.dataset.originalImage + "?t=" + new Date().getTime();
+    });
   }
 
   function updateDownloadCount(name) {
@@ -1310,14 +1348,36 @@ async function renderIcons(filteredImages) {
   }
 
   function fallbackDownload(url, name, format) {
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${name}.${format}`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    updateDownloadCount(name);
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = "Anonymous";
+      
+      img.onload = function() {
+        try {
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+          canvas.width = img.width;
+          canvas.height = img.height;
+          ctx.drawImage(img, 0, 0);
+          
+          const dataUrl = canvas.toDataURL(`image/${format}`);
+          triggerDownload(dataUrl, `${name}.${format}`);
+          updateDownloadCount(name);
+          resolve();
+        } catch (error) {
+          reject(error);
+        }
+      };
+      
+      img.onerror = function() {
+        reject(new Error("Failed to load fallback image"));
+      };
+      
+      img.src = url;
+    });
   }
+
+  // ===== نهاية التعديلات الجديدة =====
 
   searchFormat.addEventListener("input", () => {
     const formatSearchText = searchFormat.value.trim().toLowerCase();
@@ -1354,51 +1414,51 @@ async function renderIcons(filteredImages) {
       if (url && url.includes("twemoji")) {
         fallbackDownload(url, name, "png");
       } else {
-        handleDownload("png");
+        handleDownload("png", name);
       }
     });
   document
     .getElementById("downloadJPG")
-    .addEventListener("click", () => handleDownload("jpg"));
+    .addEventListener("click", () => handleDownload("jpg", popupName.textContent));
   document
     .getElementById("downloadWEBP")
-    .addEventListener("click", () => handleDownload("webp"));
+    .addEventListener("click", () => handleDownload("webp", popupName.textContent));
   document
     .getElementById("downloadGIF")
-    .addEventListener("click", () => handleDownload("gif"));
+    .addEventListener("click", () => handleDownload("gif", popupName.textContent));
   document
     .getElementById("downloadPDF")
-    .addEventListener("click", () => handleDownload("pdf"));
+    .addEventListener("click", () => handleDownload("pdf", popupName.textContent));
   document
     .getElementById("downloadMP4")
-    .addEventListener("click", () => handleDownload("mp4"));
+    .addEventListener("click", () => handleDownload("mp4", popupName.textContent));
   document
     .getElementById("downloadTDS")
-    .addEventListener("click", () => handleDownload("tds"));
+    .addEventListener("click", () => handleDownload("tds", popupName.textContent));
   document
     .getElementById("downloadTIFF")
-    .addEventListener("click", () => handleDownload("tiff"));
+    .addEventListener("click", () => handleDownload("tiff", popupName.textContent));
   document
     .getElementById("downloadTGA")
-    .addEventListener("click", () => handleDownload("tga"));
+    .addEventListener("click", () => handleDownload("tga", popupName.textContent));
   document
     .getElementById("downloadBMP")
-    .addEventListener("click", () => handleDownload("bmp"));
+    .addEventListener("click", () => handleDownload("bmp", popupName.textContent));
   document
     .getElementById("downloadICO")
-    .addEventListener("click", () => handleDownload("ico"));
+    .addEventListener("click", () => handleDownload("ico", popupName.textContent));
   document
     .getElementById("downloadDXF")
-    .addEventListener("click", () => handleDownload("dxf"));
+    .addEventListener("click", () => handleDownload("dxf", popupName.textContent));
   document
     .getElementById("downloadRAW")
-    .addEventListener("click", () => handleDownload("raw"));
+    .addEventListener("click", () => handleDownload("raw", popupName.textContent));
   document
     .getElementById("downloadEMF")
-    .addEventListener("click", () => handleDownload("emf"));
+    .addEventListener("click", () => handleDownload("emf", popupName.textContent));
   document
     .getElementById("downloadPPM")
-    .addEventListener("click", () => handleDownload("ppm"));
+    .addEventListener("click", () => handleDownload("ppm", popupName.textContent));
 
   downloadCounts.style.display = downloadCounts.style.display || "none";
 
