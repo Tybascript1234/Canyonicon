@@ -515,194 +515,214 @@ document.addEventListener("DOMContentLoaded", async () => {
     await renderIcons(filteredImages);
   }
 
-async function renderIcons(filteredImages) {
-  loadingIndicator.style.display = "block";
-  currentIconTypeText.textContent =
-    currentIconType.charAt(0).toUpperCase() + currentIconType.slice(1);
+  let isFirstLoad = true; // متغير لتتبع التحميل الأول
 
-  let loadedCount = 0;
-  const totalCount = filteredImages.length;
+  async function renderIcons(filteredImages) {
+    loadingIndicator.style.display = "block";
+    currentIconTypeText.textContent =
+      currentIconType.charAt(0).toUpperCase() + currentIconType.slice(1);
 
-  function updateProgress() {
-    loadedCount++;
-    const percent = Math.round((loadedCount / totalCount) * 100);
-    loadingProgress.style.width = percent + "%";
-    loadingPercent.textContent = percent + "%";
-
-    if (loadedCount === totalCount) {
-      setTimeout(() => {
-        loadingIndicator.style.display = "none";
-      }, 500);
+    // تطبيق التأثير فقط في التحميل الأول
+    if (isFirstLoad) {
+      searchInput.style.opacity = "0.5";
+      searchInput2.style.opacity = "0.5";
+      searchInput.disabled = true;
+      searchInput2.disabled = true;
     }
-  }
 
-  const batchSize = 50;
-  const resultsFragment = document.createDocumentFragment();
+    let loadedCount = 0;
+    const totalCount = filteredImages.length;
 
-  window.addEventListener(
-    "contextmenu",
-    function (e) {
-      if (e.target.closest(".image-container")) {
-        e.preventDefault();
+    function updateProgress() {
+      loadedCount++;
+      const percent = Math.round((loadedCount / totalCount) * 100);
+      loadingProgress.style.width = percent + "%";
+      loadingPercent.textContent = percent + "%";
+
+      if (loadedCount === totalCount) {
+        setTimeout(() => {
+          loadingIndicator.style.display = "none";
+
+          // إعادة التفعيل فقط في التحميل الأول
+          if (isFirstLoad) {
+            searchInput.style.opacity = "1";
+            searchInput2.style.opacity = "1";
+            searchInput.disabled = false;
+            searchInput2.disabled = false;
+            isFirstLoad = false; // وضع علامة أن التحميل الأول اكتمل
+          }
+        }, 500);
       }
-    },
-    false
-  );
+    }
 
-  // اجمع صور الإيموجي التي بها خطأ لتحذفها لاحقًا
-  let emojiImagesToRemove = [];
-  let actuallyRenderedCount = 0; // عدد الصور التي تظهر فعلاً
+    const batchSize = 50;
+    const resultsFragment = document.createDocumentFragment();
 
-  for (let i = 0; i < filteredImages.length; i += batchSize) {
-    const batch = filteredImages.slice(i, i + batchSize);
-    await Promise.all(
-      batch.map(async (imageData) => {
-        const { imageUrl, name, category, isLogo, isEmoji } = imageData;
-
-        const imageContainer = document.createElement("button");
-        imageContainer.className = "image-container";
-
-        const rreDiv = document.createElement("div");
-        rreDiv.id = "rre";
-        rreDiv.style.display = "flex";
-        rreDiv.style.justifyContent = "center";
-        rreDiv.style.alignItems = "center";
-        imageContainer.appendChild(rreDiv);
-
-        const imgElement = document.createElement("img");
-        imgElement.className = "svg-icon";
-        imgElement.loading = "lazy";
-        imgElement.style.opacity = "1";
-        imgElement.src = imageUrl;
-        imgElement.dataset.originalImage = imageUrl;
-        imgElement.dataset.isLogo = isLogo;
-        imgElement.alt = name;
-        if (isEmoji) imgElement.dataset.emoji = "true";
-
-        let valid = true;
-
-        imgElement.onload = function () {
-          rreDiv.remove();
-          // فقط إذا لم تكن بها خطأ أضفها للعداد
-          actuallyRenderedCount++;
-          // تحديث العدد مباشرة لجعل العدد ديناميكي أثناء التحميل
-          containerCount.textContent = actuallyRenderedCount;
-        };
-
-        imgElement.onerror = function () {
-          rreDiv.remove();
-          valid = false;
-          if (isEmoji) {
-            emojiImagesToRemove.push(imageUrl);
-            imageContainer.remove();
-          }
-        };
-
-        const nameElement = document.createElement("div");
-        nameElement.className = "image-name";
-        nameElement.textContent = name;
-        nameElement.title = name;
-
-        const downloadButton = document.createElement("button");
-        downloadButton.innerHTML =
-          '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#1f1f1f"><path d="M240-400q-33 0-56.5-23.5T160-480q0-33 23.5-56.5T240-560q33 0 56.5 23.5T320-480q0 33-23.5 56.5T240-400Zm240 0q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm240 0q-33 0-56.5-23.5T640-480q0-33 23.5-56.5T720-560q33 0 56.5 23.5T800-480q0 33-23.5 56.5T720-400Z"/></svg>';
-        downloadButton.className = "download-btn";
-        downloadButton.addEventListener("click", (event) => {
-          if (isEmoji) {
-            showDownloadPopup(event, imgElement.src, name, false, true);
-          } else {
-            showDownloadPopup(
-              event,
-              imgElement.dataset.originalImage,
-              name,
-              isLogo
-            );
-          }
-        });
-
-        imageContainer.appendChild(imgElement);
-        imageContainer.appendChild(nameElement);
-        imageContainer.appendChild(downloadButton);
-        imageContainer.addEventListener("click", (event) => {
-          event.stopPropagation();
-          copyImageName(nameElement);
-        });
-
-        function copyImageName(nameElement) {
-          const originalName = nameElement.textContent;
-          nameElement.textContent = "Copied!";
-
-          navigator.clipboard
-            .writeText(originalName)
-            .then(() => {
-              console.log("Text copied to clipboard");
-            })
-            .catch((err) => {
-              console.error("Failed to copy text: ", err);
-            });
-
-          setTimeout(() => {
-            nameElement.textContent = originalName;
-          }, 1000);
+    window.addEventListener(
+      "contextmenu",
+      function (e) {
+        if (e.target.closest(".image-container")) {
+          e.preventDefault();
         }
-
-        if (category === "category1") {
-          category1Container.appendChild(imageContainer);
-        } else if (category === "category2") {
-          category2Container.appendChild(imageContainer);
-        } else if (category === "category3") {
-          category3Container.appendChild(imageContainer);
-        } else {
-          galleryContainer.appendChild(imageContainer);
-        }
-
-        updateProgress();
-      })
+      },
+      false
     );
 
-    await new Promise((resolve) => setTimeout(resolve, 0));
-  }
+    // اجمع صور الإيموجي التي بها خطأ لتحذفها لاحقًا
+    let emojiImagesToRemove = [];
+    let actuallyRenderedCount = 0; // عدد الصور التي تظهر فعلاً
 
-  // بعد انتهاء التحميل، احذف صور الإيموجي التي بها خطأ من emojiImages و images
-  if (emojiImagesToRemove.length > 0) {
-    for (const url of emojiImagesToRemove) {
-      const idx = emojiImages.findIndex(e => e.imageUrl === url);
-      if (idx !== -1) emojiImages.splice(idx, 1);
+    for (let i = 0; i < filteredImages.length; i += batchSize) {
+      const batch = filteredImages.slice(i, i + batchSize);
+      await Promise.all(
+        batch.map(async (imageData) => {
+          const { imageUrl, name, category, isLogo, isEmoji } = imageData;
+
+          const imageContainer = document.createElement("button");
+          imageContainer.className = "image-container";
+
+          const rreDiv = document.createElement("div");
+          rreDiv.id = "rre";
+          rreDiv.style.display = "flex";
+          rreDiv.style.justifyContent = "center";
+          rreDiv.style.alignItems = "center";
+          imageContainer.appendChild(rreDiv);
+
+          const imgElement = document.createElement("img");
+          imgElement.className = "svg-icon";
+          imgElement.loading = "lazy";
+          imgElement.style.opacity = "1";
+          imgElement.src = imageUrl;
+          imgElement.dataset.originalImage = imageUrl;
+          imgElement.dataset.isLogo = isLogo;
+          imgElement.alt = name;
+          if (isEmoji) imgElement.dataset.emoji = "true";
+
+          let valid = true;
+
+          imgElement.onload = function () {
+            rreDiv.remove();
+            // فقط إذا لم تكن بها خطأ أضفها للعداد
+            actuallyRenderedCount++;
+            // تحديث العدد مباشرة لجعل العدد ديناميكي أثناء التحميل
+            containerCount.textContent = actuallyRenderedCount;
+          };
+
+          imgElement.onerror = function () {
+            rreDiv.remove();
+            valid = false;
+            if (isEmoji) {
+              emojiImagesToRemove.push(imageUrl);
+              imageContainer.remove();
+            }
+          };
+
+          const nameElement = document.createElement("div");
+          nameElement.className = "image-name";
+          nameElement.textContent = name;
+          nameElement.title = name;
+
+          const downloadButton = document.createElement("button");
+          downloadButton.innerHTML =
+            '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#1f1f1f"><path d="M240-400q-33 0-56.5-23.5T160-480q0-33 23.5-56.5T240-560q33 0 56.5 23.5T320-480q0 33-23.5 56.5T240-400Zm240 0q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm240 0q-33 0-56.5-23.5T640-480q0-33 23.5-56.5T720-560q33 0 56.5 23.5T800-480q0 33-23.5 56.5T720-400Z"/></svg>';
+          downloadButton.className = "download-btn";
+          downloadButton.addEventListener("click", (event) => {
+            if (isEmoji) {
+              showDownloadPopup(event, imgElement.src, name, false, true);
+            } else {
+              showDownloadPopup(
+                event,
+                imgElement.dataset.originalImage,
+                name,
+                isLogo
+              );
+            }
+          });
+
+          imageContainer.appendChild(imgElement);
+          imageContainer.appendChild(nameElement);
+          imageContainer.appendChild(downloadButton);
+          imageContainer.addEventListener("click", (event) => {
+            event.stopPropagation();
+            copyImageName(nameElement);
+          });
+
+          function copyImageName(nameElement) {
+            const originalName = nameElement.textContent;
+            nameElement.textContent = "Copied!";
+
+            navigator.clipboard
+              .writeText(originalName)
+              .then(() => {
+                console.log("Text copied to clipboard");
+              })
+              .catch((err) => {
+                console.error("Failed to copy text: ", err);
+              });
+
+            setTimeout(() => {
+              nameElement.textContent = originalName;
+            }, 1000);
+          }
+
+          if (category === "category1") {
+            category1Container.appendChild(imageContainer);
+          } else if (category === "category2") {
+            category2Container.appendChild(imageContainer);
+          } else if (category === "category3") {
+            category3Container.appendChild(imageContainer);
+          } else {
+            galleryContainer.appendChild(imageContainer);
+          }
+
+          updateProgress();
+        })
+      );
+
+      await new Promise((resolve) => setTimeout(resolve, 0));
     }
-    images = [
-      ...categorizedIcons.outline,
-      ...categorizedIcons.filled,
-      ...categorizedIcons.sharp,
-      ...emojiImages
-    ];
-  }
-  // تأكد أن العدد النهائي بعد الفلترة هو فقط عدد الصور التي تم تحميلها بنجاح
-  containerCount.textContent = actuallyRenderedCount;
 
-  // إنشاء عناصر نتائج البحث
-  searchResults.innerHTML = "";
+    // بعد انتهاء التحميل، احذف صور الإيموجي التي بها خطأ من emojiImages و images
+    if (emojiImagesToRemove.length > 0) {
+      for (const url of emojiImagesToRemove) {
+        const idx = emojiImages.findIndex((e) => e.imageUrl === url);
+        if (idx !== -1) emojiImages.splice(idx, 1);
+      }
+      images = [
+        ...categorizedIcons.outline,
+        ...categorizedIcons.filled,
+        ...categorizedIcons.sharp,
+        ...emojiImages,
+      ];
+    }
+    // تأكد أن العدد النهائي بعد الفلترة هو فقط عدد الصور التي تم تحميلها بنجاح
+    containerCount.textContent = actuallyRenderedCount;
 
-  if (actuallyRenderedCount === 0 && searchInput.value.trim() !== "") {
-    const noResultsItem = document.createElement("div");
-    noResultsItem.className = "no-results";
-    noResultsItem.innerHTML = '<span class="eerr" title="لا توجد نتائج">(^-^*)</span> لا توجد نتائج';
-    searchResults.appendChild(noResultsItem);
-  } else if (searchInput.value.trim() !== "") {
-    // فقط أضف النتائج للصور الظاهرة فعلاً
-    let renderedIndex = 0;
-    filteredImages.forEach((imageData) => {
-      const { name, imageUrl } = imageData;
-      // لا تضف النتائج إلا إذا الصورة نجحت (موجودة في emojiImages/filteredImages ولم تُحذف)
-      // لكن هنا لا يمكنك التأكد 100% إلا إذا ربطت الرقم أعلاه بالصور هنا
-      // للحل السريع: لو أردت إظهار النتائج فقط بقدر actuallyRenderedCount (الأولى فقط)
-      // لكن في أغلب الحالات لن تظهر نتائج غير موجودة لأن الصور المحذوفة تُحذف من filteredImages في الدوران القادم
+    // إنشاء عناصر نتائج البحث
+    searchResults.innerHTML = "";
 
-      if (renderedIndex < actuallyRenderedCount) {
-        const resultItem = document.createElement("button");
-        resultItem.className = "result-item ripple-btn";
-        resultItem.setAttribute("onmousedown", "createRipple(event)");
+    if (actuallyRenderedCount === 0 && searchInput.value.trim() !== "") {
+      const noResultsItem = document.createElement("div");
+      noResultsItem.className = "no-results";
+      noResultsItem.innerHTML =
+        '<span class="eerr" title="لا توجد نتائج">(^-^*)</span> لا توجد نتائج';
+      searchResults.appendChild(noResultsItem);
+    } else if (searchInput.value.trim() !== "") {
+      // فقط أضف النتائج للصور الظاهرة فعلاً
+      let renderedIndex = 0;
+      filteredImages.forEach((imageData) => {
+        const { name, imageUrl } = imageData;
+        // لا تضف النتائج إلا إذا الصورة نجحت (موجودة في emojiImages/filteredImages ولم تُحذف)
+        // لكن هنا لا يمكنك التأكد 100% إلا إذا ربطت الرقم أعلاه بالصور هنا
+        // للحل السريع: لو أردت إظهار النتائج فقط بقدر actuallyRenderedCount (الأولى فقط)
+        // لكن في أغلب الحالات لن تظهر نتائج غير موجودة لأن الصور المحذوفة تُحذف من filteredImages في الدوران القادم
 
-        resultItem.innerHTML = `
+        if (renderedIndex < actuallyRenderedCount) {
+          const resultItem = document.createElement("button");
+          resultItem.className = "result-item ripple-btn";
+          resultItem.setAttribute("onmousedown", "createRipple(event)");
+
+          resultItem.innerHTML = `
           <div class="result-item-content">
               <div class="result-thumbnail-container">
                   <img src="${imageUrl}" 
@@ -723,25 +743,25 @@ async function renderIcons(filteredImages) {
           </div>
         `;
 
-        resultItem.addEventListener("click", (e) => {
-          if (!e.target.classList.contains("result-action-btn")) {
-            searchInput.value = name;
-            searchInput2.value = name;
-            searchResults.style.display = "none";
-            searchInput.style.borderRadius = "";
-            searchInput2.style.borderRadius = "";
-            displayImages();
-          }
-        });
+          resultItem.addEventListener("click", (e) => {
+            if (!e.target.classList.contains("result-action-btn")) {
+              searchInput.value = name;
+              searchInput2.value = name;
+              searchResults.style.display = "none";
+              searchInput.style.borderRadius = "";
+              searchInput2.style.borderRadius = "";
+              displayImages();
+            }
+          });
 
-        resultsFragment.appendChild(resultItem);
-        renderedIndex++;
-      }
-    });
+          resultsFragment.appendChild(resultItem);
+          renderedIndex++;
+        }
+      });
 
-    searchResults.appendChild(resultsFragment);
+      searchResults.appendChild(resultsFragment);
+    }
   }
-}
 
   async function fetchIoniconsData() {
     try {
@@ -854,7 +874,9 @@ async function renderIcons(filteredImages) {
   }
 
   searchInput.addEventListener("input", () => handleSearchEvents(searchInput));
-  searchInput2.addEventListener("input", () => handleSearchEvents(searchInput2));
+  searchInput2.addEventListener("input", () =>
+    handleSearchEvents(searchInput2)
+  );
 
   clearButton.addEventListener("click", () => {
     searchInput.value = "";
@@ -874,7 +896,13 @@ async function renderIcons(filteredImages) {
     }
   });
 
-  function showDownloadPopup(event, imageUrl, name, isLogo = false, isEmoji = false) {
+  function showDownloadPopup(
+    event,
+    imageUrl,
+    name,
+    isLogo = false,
+    isEmoji = false
+  ) {
     event.stopPropagation();
 
     const downloadPopup = document.getElementById("downloadPopup");
@@ -1214,7 +1242,7 @@ async function renderIcons(filteredImages) {
   }
 
   // ===== التعديلات الجديدة على وظائف التنزيل =====
-  
+
   // دالة مساعدة لتنزيل الملف
   function triggerDownload(url, filename) {
     const a = document.createElement("a");
@@ -1229,7 +1257,7 @@ async function renderIcons(filteredImages) {
   // تنزيل صورة: إذا كانت إيموجي، استخدم فقط PNG
   function downloadImage(url, name, format) {
     const isEmoji = url.includes("twemoji");
-    
+
     // معالجة الإيموجي بشكل منفصل (PNG فقط)
     if (isEmoji) {
       if (format !== "png") {
@@ -1242,25 +1270,28 @@ async function renderIcons(filteredImages) {
 
     // معالجة الأيقونات العادية
     const selectedColor = colorPicker.value;
-    
+
     if (format === "svg") {
       fetch(url)
-        .then(response => {
+        .then((response) => {
           if (!response.ok) throw new Error("Network response was not ok");
           return response.text();
         })
-        .then(svgData => {
+        .then((svgData) => {
           const parser = new DOMParser();
           const svgDoc = parser.parseFromString(svgData, "image/svg+xml");
           const svgElement = svgDoc.querySelector("svg");
 
           // تطبيق اللون المحدد على SVG
           const elements = svgElement.querySelectorAll("*");
-          elements.forEach(el => {
+          elements.forEach((el) => {
             if (el.hasAttribute("fill") && el.getAttribute("fill") !== "none") {
               el.setAttribute("fill", selectedColor);
             }
-            if (el.hasAttribute("stroke") && el.getAttribute("stroke") !== "none") {
+            if (
+              el.hasAttribute("stroke") &&
+              el.getAttribute("stroke") !== "none"
+            ) {
               el.setAttribute("stroke", selectedColor);
             }
           });
@@ -1279,7 +1310,7 @@ async function renderIcons(filteredImages) {
 
           updateDownloadCount(name);
         })
-        .catch(error => {
+        .catch((error) => {
           console.error("Error processing SVG:", error);
           fallbackDownload(url, name, "svg");
         });
@@ -1296,7 +1327,7 @@ async function renderIcons(filteredImages) {
       const img = new Image();
       img.crossOrigin = "Anonymous";
 
-      img.onload = function() {
+      img.onload = function () {
         try {
           canvas.width = img.width;
           canvas.height = img.height;
@@ -1308,31 +1339,42 @@ async function renderIcons(filteredImages) {
           }
 
           let mimeType;
-          switch(format) {
-            case "jpg": mimeType = "image/jpeg"; break;
-            case "png": mimeType = "image/png"; break;
-            case "webp": mimeType = "image/webp"; break;
-            default: mimeType = `image/${format}`;
+          switch (format) {
+            case "jpg":
+              mimeType = "image/jpeg";
+              break;
+            case "png":
+              mimeType = "image/png";
+              break;
+            case "webp":
+              mimeType = "image/webp";
+              break;
+            default:
+              mimeType = `image/${format}`;
           }
 
-          canvas.toBlob(blob => {
-            if (!blob) {
-              reject(new Error("Failed to create blob"));
-              return;
-            }
-            
-            const url = URL.createObjectURL(blob);
-            triggerDownload(url, `${name}.${format}`);
-            URL.revokeObjectURL(url);
-            updateDownloadCount(name);
-            resolve();
-          }, mimeType, 1.0);
+          canvas.toBlob(
+            (blob) => {
+              if (!blob) {
+                reject(new Error("Failed to create blob"));
+                return;
+              }
+
+              const url = URL.createObjectURL(blob);
+              triggerDownload(url, `${name}.${format}`);
+              URL.revokeObjectURL(url);
+              updateDownloadCount(name);
+              resolve();
+            },
+            mimeType,
+            1.0
+          );
         } catch (error) {
           reject(error);
         }
       };
 
-      img.onerror = function() {
+      img.onerror = function () {
         reject(new Error("Failed to load image"));
       };
 
@@ -1351,15 +1393,15 @@ async function renderIcons(filteredImages) {
     return new Promise((resolve, reject) => {
       const img = new Image();
       img.crossOrigin = "Anonymous";
-      
-      img.onload = function() {
+
+      img.onload = function () {
         try {
           const canvas = document.createElement("canvas");
           const ctx = canvas.getContext("2d");
           canvas.width = img.width;
           canvas.height = img.height;
           ctx.drawImage(img, 0, 0);
-          
+
           const dataUrl = canvas.toDataURL(`image/${format}`);
           triggerDownload(dataUrl, `${name}.${format}`);
           updateDownloadCount(name);
@@ -1368,11 +1410,11 @@ async function renderIcons(filteredImages) {
           reject(error);
         }
       };
-      
-      img.onerror = function() {
+
+      img.onerror = function () {
         reject(new Error("Failed to load fallback image"));
       };
-      
+
       img.src = url;
     });
   }
@@ -1406,59 +1448,85 @@ async function renderIcons(filteredImages) {
     .addEventListener("click", () =>
       downloadImage(popupLinkInput.value, popupName.textContent, "svg")
     );
-  document
-    .getElementById("downloadPNG")
-    .addEventListener("click", () => {
-      const url = popupImage.dataset.originalImage;
-      const name = popupName.textContent;
-      if (url && url.includes("twemoji")) {
-        fallbackDownload(url, name, "png");
-      } else {
-        handleDownload("png", name);
-      }
-    });
+  document.getElementById("downloadPNG").addEventListener("click", () => {
+    const url = popupImage.dataset.originalImage;
+    const name = popupName.textContent;
+    if (url && url.includes("twemoji")) {
+      fallbackDownload(url, name, "png");
+    } else {
+      handleDownload("png", name);
+    }
+  });
   document
     .getElementById("downloadJPG")
-    .addEventListener("click", () => handleDownload("jpg", popupName.textContent));
+    .addEventListener("click", () =>
+      handleDownload("jpg", popupName.textContent)
+    );
   document
     .getElementById("downloadWEBP")
-    .addEventListener("click", () => handleDownload("webp", popupName.textContent));
+    .addEventListener("click", () =>
+      handleDownload("webp", popupName.textContent)
+    );
   document
     .getElementById("downloadGIF")
-    .addEventListener("click", () => handleDownload("gif", popupName.textContent));
+    .addEventListener("click", () =>
+      handleDownload("gif", popupName.textContent)
+    );
   document
     .getElementById("downloadPDF")
-    .addEventListener("click", () => handleDownload("pdf", popupName.textContent));
+    .addEventListener("click", () =>
+      handleDownload("pdf", popupName.textContent)
+    );
   document
     .getElementById("downloadMP4")
-    .addEventListener("click", () => handleDownload("mp4", popupName.textContent));
+    .addEventListener("click", () =>
+      handleDownload("mp4", popupName.textContent)
+    );
   document
     .getElementById("downloadTDS")
-    .addEventListener("click", () => handleDownload("tds", popupName.textContent));
+    .addEventListener("click", () =>
+      handleDownload("tds", popupName.textContent)
+    );
   document
     .getElementById("downloadTIFF")
-    .addEventListener("click", () => handleDownload("tiff", popupName.textContent));
+    .addEventListener("click", () =>
+      handleDownload("tiff", popupName.textContent)
+    );
   document
     .getElementById("downloadTGA")
-    .addEventListener("click", () => handleDownload("tga", popupName.textContent));
+    .addEventListener("click", () =>
+      handleDownload("tga", popupName.textContent)
+    );
   document
     .getElementById("downloadBMP")
-    .addEventListener("click", () => handleDownload("bmp", popupName.textContent));
+    .addEventListener("click", () =>
+      handleDownload("bmp", popupName.textContent)
+    );
   document
     .getElementById("downloadICO")
-    .addEventListener("click", () => handleDownload("ico", popupName.textContent));
+    .addEventListener("click", () =>
+      handleDownload("ico", popupName.textContent)
+    );
   document
     .getElementById("downloadDXF")
-    .addEventListener("click", () => handleDownload("dxf", popupName.textContent));
+    .addEventListener("click", () =>
+      handleDownload("dxf", popupName.textContent)
+    );
   document
     .getElementById("downloadRAW")
-    .addEventListener("click", () => handleDownload("raw", popupName.textContent));
+    .addEventListener("click", () =>
+      handleDownload("raw", popupName.textContent)
+    );
   document
     .getElementById("downloadEMF")
-    .addEventListener("click", () => handleDownload("emf", popupName.textContent));
+    .addEventListener("click", () =>
+      handleDownload("emf", popupName.textContent)
+    );
   document
     .getElementById("downloadPPM")
-    .addEventListener("click", () => handleDownload("ppm", popupName.textContent));
+    .addEventListener("click", () =>
+      handleDownload("ppm", popupName.textContent)
+    );
 
   downloadCounts.style.display = downloadCounts.style.display || "none";
 
