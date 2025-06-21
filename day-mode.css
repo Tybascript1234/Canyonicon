@@ -3,7 +3,7 @@ body.day-mode {
   background-color: #ffffff;
   /* color: #000000; */
 }
-input::placeholder {
+body.night-mode input::placeholder {
   color: #ffffff6e;
 }
 
@@ -199,6 +199,9 @@ body.night-mode .input-color {
 color: #ffffffda;
 background-color: #41454d;
 box-shadow: 0px 1px 0px #ffffff12 inset;
+}
+body.night-mode .input-color .material-symbols-outlined {
+  color: #ffffffda;
 }
 
 body.night-mode .image-container img {
