@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               emoji.name.toLowerCase().includes(keyword.toLowerCase())
             )
         )
-        .slice(0, 500);
+        .slice(0, 150);
 
       function toCodePoint(unicodeSurrogates, sep = "-") {
         const r = [];
@@ -1057,6 +1057,23 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
       } else {
         colorPicker.disabled = true;
+
+        // إضافة رسالة توضيحية عند تعطيل التلوين للإيموجي
+        const emojiColorMessage = document.createElement("div");
+        emojiColorMessage.textContent = "لا تتوفر خاصية التلوين للإيموجي";
+        emojiColorMessage.style.color = "#ff6b6b";
+        emojiColorMessage.style.fontSize = "12px";
+        emojiColorMessage.style.marginTop = "5px";
+        emojiColorMessage.style.textAlign = "center";
+
+        // إضافة الرسالة بجوار عنصر colorPicker
+        colorPicker.insertAdjacentElement("afterend", emojiColorMessage);
+
+        // إخفاء الرسالة بعد 3 ثواني
+        setTimeout(() => {
+          emojiColorMessage.style.opacity = "0";
+          setTimeout(() => emojiColorMessage.remove(), 500);
+        }, 3000);
       }
 
       const sizeButtons = {
