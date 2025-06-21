@@ -19,6 +19,17 @@ lin {
   left: 50%;
   transform: translate(-50%);
 }
+.open-link {
+  cursor: pointer;
+  background: #0000;
+  border: none;
+  display: flex;
+  align-items: center;
+}
+.open-link:focus-within {
+  outline: dashed 1px;
+  outline-color: #298dff;
+}
 .result-item.selected {
   box-shadow: 4px 0px 0px #2a86f3 inset;
   background-color: #f0f0f0;
@@ -1762,12 +1773,23 @@ justify-content: center;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #ffd662;
+  color: white;
+  background: linear-gradient(45deg, #ff416c, #e185ff, #f48cff);
+  transition: all 0.3s ease;
+  background-size: 200% auto;
   cursor: pointer;
   border-radius: 25px;
 }
+.input-color:hover {
+  background-position: right center;
+  transform: scale(1.05);
+}
 .input-color:active {
   background-color: #e7c15a;
+  transform: scale(1.00);
+}
+.input-color .ripple {
+  background-color: rgba(255, 255, 255, 0.233);
 }
 
 /* chat-wep */
@@ -2935,9 +2957,9 @@ tima:active {
 .olclick_icon {
   position: relative;
   cursor: pointer;
-  width: 44px;
+  width: 47px;
   height: 44px;
-  display: flex;
+  text-align: -webkit-center;
   justify-content: center;
   border-radius: 10px;
   box-shadow: 0px 1px 2px #0000002f;
@@ -2966,11 +2988,10 @@ tima:active {
   box-shadow: 0px 1px 2px #00000047;
 }
 .olclick_icon a {
-  position: absolute;
-  bottom: -18px;
   font-size: 9px;
-  width: max-content;
   color: white;
+  margin-top: 5px;
+  padding: 0;
   text-shadow: 0px 1px 2px #0000008c;
 }
 
