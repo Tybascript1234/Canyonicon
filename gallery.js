@@ -1030,6 +1030,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       if (!isEmoji) {
         colorPicker.disabled = false;
+        searchFormat.disabled = false; // تمكين خانة البحث إذا لم تكن إيموجي
+        searchFormat.placeholder = "Search...";
+
         colorPicker.addEventListener("input", () => {
           const originalImg = new Image();
           originalImg.crossOrigin = "Anonymous";
@@ -1057,6 +1060,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
       } else {
         colorPicker.disabled = true;
+        searchFormat.disabled = true; // تعطيل خانة البحث إذا كانت إيموجي
+        searchFormat.placeholder = "Not available";
 
         // إضافة رسالة توضيحية عند تعطيل التلوين للإيموجي
         const emojiColorMessage = document.createElement("div");
