@@ -2603,12 +2603,14 @@ user-select: all;
 }
 #downloadCounts div::before {
   content: "";
-  width: 7px;
-  height: 7px;
+  width: 5px;
+  top: 0;
+  height: -webkit-fill-available;
   position: absolute;
+  margin: 5px 0;
   border-radius: 50px;
   background-color: #d3d3d38a;
-  left: -11px;
+  left: -10px;
 }
 .fan {
   position: absolute;
@@ -2843,6 +2845,9 @@ tima {
   width: max-content;
   font-weight: 400;
   text-align: -webkit-center;
+}
+tima:active {
+  opacity: .7;
 }
 .download-app-img-div .sswe {
     display: none;
@@ -3922,7 +3927,7 @@ body .zoom .ripple {
 
 .relload {
   position: fixed;
-  opacity: 0;
+  /* opacity: 0; */
   top: 0;
   width: 100%;
   height: 3px;
