@@ -3,6 +3,9 @@ body.day-mode {
   background-color: #ffffff;
   /* color: #000000; */
 }
+input::placeholder {
+  color: #ffffff6e;
+}
 
 body.night-mode  .history-link i {
 color: white;
@@ -489,7 +492,7 @@ body.night-mode .download-popup-div::before {
   color: #e5e5e524;
 }
 body.night-mode .result-item img {
-  filter: invert(1);
+  filter: none;
 }
 body.night-mode .result-item.selected {
   box-shadow: 0px -1px 0px #ffffff12 inset, 4px 0px 0px #2a86f3 inset;
