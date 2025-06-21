@@ -23,6 +23,7 @@ lin {
   box-shadow: 4px 0px 0px #2a86f3 inset;
   background-color: #f0f0f0;
   border-color: #ddd;
+  transition: ease 0.3s;
 }
 .result-item.selected:hover {
   background-color: #e0e0e0;
@@ -32,7 +33,7 @@ lin {
   right: 0;
   height: 26px;
   margin: -2px 8px;
-  filter: contrast(0.6);
+  /* filter: contrast(0.6); */
 }
 .result-item-content {
   display: flex;
@@ -2603,14 +2604,14 @@ user-select: all;
 }
 #downloadCounts div::before {
   content: "";
-  width: 5px;
+  width: 3px;
   top: 0;
   height: -webkit-fill-available;
   position: absolute;
   margin: 5px 0;
   border-radius: 50px;
-  background-color: #d3d3d38a;
-  left: -10px;
+  background-color: #4d90fe;
+  left: -9px;
 }
 .fan {
   position: absolute;
